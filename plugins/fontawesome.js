@@ -1,0 +1,7 @@
+import Vue from 'vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faS } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faS)
+Vue.component('FontAwesomeIcon', FontAwesomeIcon)

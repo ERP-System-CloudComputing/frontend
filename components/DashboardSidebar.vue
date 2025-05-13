@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer app permanent>
+  <v-navigation-drawer app permanent class="border-none">
     <LogoERPVue class="py-14"/>
 
     <v-list dense>

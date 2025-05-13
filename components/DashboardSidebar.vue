@@ -41,7 +41,7 @@ const menuItems = [
   { title: 'Circulars', icon: 'mdi-email', path: '/circulars' },
   { title: 'Maintenance', icon: 'mdi-wrench', path: '/maintenance' },
   { title: 'Logistics', icon: 'mdi-truck-delivery', path: '/logistics' },
-  { title: 'Office Budget', icon: 'mdi-bank', path: '/budget' },
+  { title: 'Office Budget', icon: 'mdi-piggy-bank', path: '/budget' },
   { title: 'Stocks and Inventory', icon: 'mdi-warehouse', path: '/stocks' },
   { title: 'Notifications', icon: 'mdi-bell', path: '/notifications' },
   { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' },

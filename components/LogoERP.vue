@@ -17,9 +17,9 @@
         </g>
       </svg>
     </div>
-    <div>
+    <div class="mt-2">
       <h4 class="text-sm text-center font-bold bg-gradient-to-r from-blue-500 to-blue-800 text-transparent bg-clip-text">UIUxOtor</h4>
-      <span class="text-center block">ERP System</span>
+      <span class="text-sm text-center block m-0">ERP System</span>
     </div>
   </div>
 </template>

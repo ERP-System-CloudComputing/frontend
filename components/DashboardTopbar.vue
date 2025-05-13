@@ -1,8 +1,13 @@
 <template>
   <v-app-bar app flat color="transparent" class="py-6">
     <div class="flex flex-col">
-      <h1 class="font-extrabold text-xl">Welcome, Mr. Otor John</h1>
-      <span class="font-normal text-sm mt-1">Today is Saturday, 11th November 2022.</span>
+      <div class="flex items-center">
+        <v-icon v-if="pageDetails().icon" class="mr-2" color="blue darken-4">{{ pageDetails().icon }}</v-icon>
+        <h1 class="font-extrabold text-xl">
+          {{ pageDetails().title }}
+        </h1>
+      </div>
+      <span class="font-normal text-sm mt-1">{{ pageDetails().subtitle }}</span>
     </div>
 
     <v-spacer />
@@ -29,6 +34,37 @@
 </template>
 
 <script>
+export default {
+  methods: {
+    currentDate () {
+      const now = new Date()
+
+      const weekday = now.toLocaleDateString('en-GB', { weekday: 'long' })
+      const day = now.getDate()
+      const month = now.toLocaleDateString('en-GB', { month: 'long' })
+      const year = now.getFullYear()
+
+      return `Today is ${weekday}, ${day} ${month} ${year}.`
+    },
+    pageDetails () {
+      const route = this.$route.name
+
+      const titles = {
+        dashboard: {
+          title: 'Welcome, Mr. Otor John 👋',
+          subtitle: this.currentDate()
+        },
+        budget: {
+          icon: 'mdi-piggy-bank',
+          title: 'Office Budget',
+          subtitle: 'View, create and send budget request.'
+        }
+      }
+
+      return titles[route]
+    }
+  }
+}
 </script>
 
 <style scoped>

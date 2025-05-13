@@ -1,5 +1,4 @@
 module.exports = {
-  purge: [],
   darkMode: false, // or 'media' or 'class'
   content: [
     './components/**/*.{vue,js,ts}',
@@ -11,12 +10,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#14ADD6'
+        primario: '#14ADD6',
+        secundario: '#384295',
+        gris_claro: '#4b5563',
+        negro: '#000000'
+      },
+      backgroundImage: {
+        'gradient-primario-secundario': 'linear-gradient(to right, #14ADD6, #384295)'
       }
     }
   },
   variants: {
     extend: {}
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/forms'),
+    function ({ addVariant }) {
+      addVariant('before', '&::before')
+    }
+  ]
 }

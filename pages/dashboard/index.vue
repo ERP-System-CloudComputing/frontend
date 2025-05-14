@@ -1,11 +1,14 @@
 <template>
-    <div>
-        
-    </div>
+  <dashboard-cards-vue />
 </template>
 
 <script>
+import DashboardCardsVue from '~/components/dashboard/DashboardCards.vue'
+
 export default {
-    layout: 'principal'
+  layout: 'principal',
+  components: {
+    DashboardCardsVue
+  }
 }
 </script>

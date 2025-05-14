@@ -1,9 +1,12 @@
 <template>
   <v-app>
     <DashboardSidebarVue />
-    <v-main class="bg-gray-fondo pa-4">
-      <DashboardTopbarVue />
-      <nuxt />
+    <DashboardTopbarVue />
+
+    <v-main class="bg-gray-fondo mt-10">
+      <div class="mx-4">
+        <nuxt />
+      </div>
     </v-main>
   </v-app>
 </template>

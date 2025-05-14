@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app flat color="transparent" class="py-6">
+  <v-app-bar app flat color="transparent" class="py-6 h-auto">
     <div class="flex flex-col">
       <div class="flex items-center">
         <v-icon v-if="pageDetails().icon" class="mr-2" color="blue darken-4">
@@ -28,7 +28,7 @@
         <template #activator="{ on, attrs }">
           <div class="flex justify-center items-center">
             <v-avatar size="32" class="mr-4">
-              <img src="https://i.pravatar.cc/300" alt="Avatar" />
+              <img src="https://i.pravatar.cc/300" alt="Avatar">
             </v-avatar>
             <div class="flex-none flex flex-col items-start mr-4">
               <span class="inline-block text-sm">Otor John</span>
@@ -47,7 +47,9 @@
             to="profile"
           >
             <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              <v-icon class="mr-2" color="black">mdi-account</v-icon>
+              <v-icon class="mr-2" color="black">
+                mdi-account
+              </v-icon>
               <span class="text-sm text-black">Profile</span>
             </div>
           </nuxt-link>
@@ -55,12 +57,16 @@
             to="settings"
           >
             <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              <v-icon class="mr-2" color="black">mdi-cog</v-icon>
+              <v-icon class="mr-2" color="black">
+                mdi-cog
+              </v-icon>
               <span class="text-sm text-black">Settings</span>
             </div>
           </nuxt-link>
           <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" @click="logout">
-            <v-icon class="mr-2" color="black">mdi-logout</v-icon>
+            <v-icon class="mr-2" color="black">
+              mdi-logout
+            </v-icon>
             <span class="text-sm">Logout</span>
           </div>
         </div>

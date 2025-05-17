@@ -72,6 +72,14 @@ export default {
       menuItems,
       localDrawer: this.drawer
     }
+  },
+  watch: {
+    drawer (val) {
+      this.localDrawer = val
+    },
+    localDrawer (val) {
+      this.$emit('update:drawer', val)
+    }
   }
 }
 </script>

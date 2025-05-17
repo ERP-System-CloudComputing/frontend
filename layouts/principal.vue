@@ -32,13 +32,7 @@ export default {
   },
   methods: {
     checkMobile () {
-      console.log('rezise...')
       this.isMobile = window.innerWidth < 960 // o el breakpoint que quieras
-      if (this.isMobile) {
-        this.drawer = false
-      } else {
-        this.drawer = true
-      }
     },
     toggleDrawer () {
       console.log('funciona')

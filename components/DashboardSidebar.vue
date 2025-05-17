@@ -1,5 +1,10 @@
 <template>
-  <v-navigation-drawer app permanent class="border-none">
+  <v-navigation-drawer
+    app
+    v-model="localDrawer"
+    :permanent="!isMobile"
+    :temporary="isMobile"
+  >
     <LogoERPVue class="py-14" />
 
     <v-list dense>
@@ -49,12 +54,23 @@ const menuItems = [
 ]
 
 export default {
+  props: {
+    isMobile: {
+      type: Boolean,
+      required: true
+    },
+    drawer: {
+      type: Boolean,
+      required: true
+    }
+  },
   components: {
     LogoERPVue
   },
   data () {
     return {
-      menuItems
+      menuItems,
+      localDrawer: this.drawer
     }
   }
 }

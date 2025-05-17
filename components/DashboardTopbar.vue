@@ -1,5 +1,14 @@
 <template>
-  <v-app-bar app flat color="transparent" class="py-6 h-auto">
+  <v-app-bar
+    app
+    flat
+    color="white"
+    class="pt-6 pb-2 bg-white header"
+  >
+    <v-btn icon @click="$emit('toggle-sidebar')" v-if="isMobile">
+      <v-icon>mdi-menu</v-icon>
+    </v-btn>
+
     <div class="flex flex-col">
       <div class="flex items-center">
         <v-icon v-if="pageDetails().icon" class="mr-2" color="blue darken-4">
@@ -9,7 +18,7 @@
           {{ pageDetails().title }}
         </h1>
       </div>
-      <span class="font-normal text-sm mt-1">{{ pageDetails().subtitle }}</span>
+      <span class="font-normal text-sm mt-1" v-if="!isMobile">{{ pageDetails().subtitle }}</span>
     </div>
 
     <v-spacer />
@@ -77,6 +86,12 @@
 
 <script>
 export default {
+  props: {
+    isMobile: {
+      type: Boolean,
+      require: true
+    }
+  },
   methods: {
     currentDate () {
       const now = new Date()
@@ -115,5 +130,8 @@ export default {
 <style scoped>
 .contenedor-texto {
   flex: none !important;
+}
+.header {
+  height: auto !important;
 }
 </style>

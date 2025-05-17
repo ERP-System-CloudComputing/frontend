@@ -16,7 +16,7 @@
           <DashboardTable :data="memoData" />
         </v-col>
         <v-col cols="12" md="6">
-          <DashboardTable :data="memoData" />
+          <DashboardDoughnutVue />
         </v-col>
       </v-row>
     </div>
@@ -25,12 +25,14 @@
 
 <script>
 import DashboardCardsVue from '~/components/dashboard/DashboardCards.vue'
+import DashboardDoughnutVue from '~/components/dashboard/DashboardDoughnut.vue'
 import DashboardTable from '~/components/dashboard/DashboardTable.vue'
 
 export default {
   components: {
     DashboardCardsVue,
-    DashboardTable
+    DashboardTable,
+    DashboardDoughnutVue
   },
   layout: 'principal',
   data () {
@@ -44,6 +46,7 @@ export default {
   methods: {
     getMemoData () {
       return {
+        title: 'Memo',
         headers: [
           { text: 'S/N', value: 'sn' },
           { text: 'Memo Title', value: 'title' },

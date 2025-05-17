@@ -35,7 +35,6 @@ export default {
       this.isMobile = window.innerWidth < 960 // o el breakpoint que quieras
     },
     toggleDrawer () {
-      console.log('funciona')
       this.drawer = !this.drawer
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Memo</v-card-title>
+    <v-card-title>{{ data.title }}</v-card-title>
     <div style="height: 250px; overflow-y: auto;">
       <v-data-table :items="data.items" :headers="data.headers" dense hide-default-footer />
     </div>

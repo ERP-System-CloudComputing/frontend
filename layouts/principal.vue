@@ -1,8 +1,8 @@
 <template>
   <v-app>
+    <DashboardTopbarVue />
     <DashboardSidebarVue />
-    <v-main class="bg-gray-fondo pa-4">
-      <DashboardTopbarVue />
+    <v-main class="bg-gray-fondo">
       <nuxt />
     </v-main>
   </v-app>

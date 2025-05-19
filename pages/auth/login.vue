@@ -3,7 +3,9 @@
     <div class="flex flex-col w-1/2 p-16">
       <div class="flex justify-between items-center">
         <div>
-          <img src="../../static/logo.png" alt="Logo Image" class="w-20 h-20">
+          <a href="/">
+            <img src="../../static/logo.png" alt="Logo Image" class="w-20 h-20">
+          </a>
         </div>
         <a
           href="/register"
@@ -22,11 +24,12 @@
         Please Sign In
       </h2>
 
-      <form method="POST" action="/" class="mt-16 w-full">
+      <form method="POST" class="mt-16 w-full" @submit.prevent="login">
         <div class="flex flex-col mb-8">
           <label for="email" class="block text-negro mb-2">Email address</label>
           <input
             id="email"
+            v-model="user.personalEmail"
             type="text"
             name="email"
             placeholder="Enter email address"
@@ -39,9 +42,10 @@
           <label for="password" class="block text-negro mb-2">Password</label>
           <input
             id="password"
+            v-model="user.password"
             :type="showPassword ? 'text' : 'password'"
             name="password"
-            placeholder="Enter your password"
+            placeholder="**********"
             class="w-full p-2 border border-gray-300 rounded-md"
             required
           >
@@ -60,10 +64,12 @@
 
         <div class="mt-8 flex justify-between items-center">
           <label class="inline-flex items-center">
-            <input type="checkbox" class="mr-1">
+            <input v-model="user.rememberMe" type="checkbox" class="mr-1">
             <span>Remember me</span>
           </label>
-          <a href="/recover-password" class="text-primario">I forgot my password</a>
+          <NuxtLink to="/auth/recover-password" class="text-primario hover:scale-105 transform duration-500">
+            I forgot my password
+          </NuxtLink>
         </div>
 
         <input
@@ -84,6 +90,7 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import Swal from 'sweetalert2'
 
 export default {
   components: { FontAwesomeIcon },
@@ -93,6 +100,41 @@ export default {
       icons: {
         eye: faEye,
         eyeSlash: faEyeSlash
+      },
+      user: {
+        personalEmail: '',
+        password: '',
+        rememberMe: false
+      }
+    }
+  },
+  methods: {
+    async login () {
+      try {
+        const response = await this.$axios.$post('/staff/login', {
+          personalEmail: this.user.personalEmail,
+          password: this.user.password,
+          rememberMe: this.user.rememberMe
+        }, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true // * Para las Cookies HTTP-only
+        })
+
+        // * Guardar el token en el almacenamiento local:
+        this.$auth.setUserToken(response.accessToken)
+
+        this.$router.push('/dashboard')
+      } catch (error) {
+        // alert(error.response?.data?.message || 'Error al iniciar sesión')
+        Swal.fire({
+          icon: 'error',
+          title: 'Incorrect!',
+          text: 'Opps, you have entered wrong Password or e-mail',
+          footer: '<a href="/auth/recover-password"> forgot your password? Click here for recover it</a>'
+          // footer: '<a href="/auth/email-verified">Email not confirmed? Active your account here</a>'
+        })
       }
     }
   }

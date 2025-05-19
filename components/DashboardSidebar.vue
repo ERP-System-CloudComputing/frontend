@@ -17,15 +17,15 @@
         <v-list-item
           :class="[
             'my-1 ',
-            $route.path === item.path ? 'bg-blue-100 text-white border-l-4 border-blue-500' : 'hover:bg-gray-100'
+            $route.path.match(/^\/[^/]+/)[0] === item.path ? 'bg-blue-100 text-white border-l-4 border-blue-500' : 'hover:bg-gray-100'
           ]"
         >
           <v-list-item-icon class="mr-2">
-            <v-icon :color="$route.path === item.path ? 'blue darken-4' : 'black'">
+            <v-icon :color="$route.path.match(/^\/[^/]+/)[0] === item.path ? 'blue darken-4' : 'black'">
               {{ item.icon }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title :class="$route.path === item.path ? 'text-blue-800' : 'text-black'">
+          <v-list-item-title :class="$route.path.match(/^\/[^/]+/)[0] === item.path ? 'text-blue-800' : 'text-black'">
             {{ item.title }}
           </v-list-item-title>
         </v-list-item>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="my-5">
     <BudgetCardsVue />
 
     <div class="flex justify-between items-center flex-col sm:flex-row mt-6 bg-white py-9 px-5 rounded-2xl shadow-sm">
@@ -14,7 +14,7 @@
       </nuxt-link>
     </div>
 
-    <v-card class="rounded-2xl shadow-sm mt-6">
+    <v-card class="rounded-2xl shadow-sm mt-6" elevation="0">
       <v-card-title>Budget History</v-card-title>
       <v-data-table
         :headers="headers"
@@ -55,9 +55,9 @@ export default {
         { text: 'S/N', value: 'sn', width: 70 },
         { text: 'Budget No.', value: 'budgetNo' },
         { text: 'Budget Description', value: 'description' },
-        { text: 'Budgeted Amount (₦)', value: 'budgetedAmount' },
-        { text: 'Actual Amount (₦)', value: 'actualAmount' },
-        { text: 'Variance (₦)', value: 'variance' },
+        { text: 'Budgeted Amount (MXN)', value: 'budgetedAmount' },
+        { text: 'Actual Amount (MXN)', value: 'actualAmount' },
+        { text: 'Variance (MXN)', value: 'variance' },
         { text: 'Date', value: 'date' }
       ],
       budgets: [
@@ -73,7 +73,7 @@ export default {
   },
   methods: {
     formatCurrency (amount) {
-      return amount.toLocaleString('en-NG', { style: 'currency', currency: 'NGN' })
+      return amount.toLocaleString('en-NG', { style: 'currency', currency: 'MXN' })
     }
   }
 }

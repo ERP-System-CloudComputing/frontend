@@ -115,6 +115,11 @@ export default {
           icon: 'mdi-piggy-bank',
           title: 'Office Budget',
           subtitle: 'View, create and send budget request.'
+        },
+        'budget-create': {
+          icon: 'mdi-piggy-bank',
+          title: 'Create Budget',
+          subtitle: 'Create and send budget request.'
         }
       }
 

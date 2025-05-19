@@ -6,6 +6,7 @@
 
 <script>
 import login from './auth/login.vue'
+
 export default {
   name: 'IndexPage',
   components: {

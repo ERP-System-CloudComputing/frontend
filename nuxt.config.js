@@ -23,7 +23,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/fortawesome.js',
-    '~/plugins/vxe-table.js'
+    '~/plugins/vxe-table.js',
+    '~/plugins/tokensExpired.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -52,14 +53,22 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: process.env.APP_URL
+    baseURL: process.env.APP_URL,
+    credentials: true, // * Para las cookies,
+    headers: {
+      common: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    }
   },
 
   auth: {
     strategies: {
       local: {
         token: {
-          property: 'token',
+          property: 'accessToken',
+          maxAge: 20 * 60,
           global: true,
           required: true,
           type: 'Bearer'
@@ -69,9 +78,9 @@ export default {
           autoFetch: true
         },
         endpoints: {
-          login: { url: '/auth/login', method: 'post' },
-          logout: { url: '/auth/logout', method: 'post' },
-          user: { url: '/auth/user', method: 'get' }
+          login: { url: '/staff/login', method: 'POST', propertyName: 'accessToken' },
+          logout: { url: '/staff/logout', method: 'POST' },
+          user: { url: '/staff/user', method: 'GET' }
         }
       }
     }

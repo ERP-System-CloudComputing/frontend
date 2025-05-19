@@ -17,6 +17,9 @@ module.exports = {
       },
       backgroundImage: {
         'gradient-primario-secundario': 'linear-gradient(to right, #14ADD6, #384295)'
+      },
+      width: {
+        '25rem': '25rem'
       }
     }
   },

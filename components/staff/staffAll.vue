@@ -40,10 +40,8 @@
         />
       </v-col>
       <v-col align-self="center" align="center">
-        <button class=" flex w-52 justify-center rounded-lg bg-gradient-to-br from-blue-400  to-blue-800 hover:from-blue-600 shadow-md p-4">
-          <span class="text-white">
-            Add New Staff
-          </span>
+        <button class=" text-white flex w-52 justify-center rounded-lg bg-gradient-to-br from-blue-400  to-blue-800 hover:from-blue-600 shadow-md p-4" @click="staffAdd">
+          Add New Staff
         </button>
       </v-col>
     </v-row>
@@ -187,6 +185,9 @@ export default {
     this.loadStaffs()
   },
   methods: {
+    staffAdd () {
+      this.$router.push('/staff/add')
+    },
     async loadStaffs () {
       try {
         const response = await this.$axios.get('/staff/getAll')

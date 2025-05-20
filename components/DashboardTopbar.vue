@@ -65,6 +65,11 @@ export default {
           title: 'All Staff',
           subtitle: 'View, search for and add new staff'
         },
+        'staff-add': {
+          icon: 'mdi-account-plus',
+          title: 'Add Staff',
+          subtitle: 'Fill out the form to create a new staff member.'
+        },
         budget: {
           icon: 'mdi-piggy-bank',
           title: 'Office Budget',

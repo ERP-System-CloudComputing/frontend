@@ -16,23 +16,28 @@
       <v-card-text>
         <v-row dense>
           <v-col cols="12" md="4">
-            <v-text-field v-model="budget.budgetNo" label="Budget number" outlined dense />
+            <label class="text-sm font-normal text-black">Budget number</label>
+            <v-text-field v-model="budget.budgetNo" placeholder="Enter item" outlined dense />
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field v-model="budget.description" label="Budget description" outlined dense />
+            <label class="text-sm font-normal text-black">Budget description</label>
+            <v-text-field v-model="budget.description" placeholder="Enter description" outlined dense />
           </v-col>
           <v-col cols="12" md="4">
-            <v-text-field v-model="budget.amount" label="Budget amount" outlined dense prefix="$" />
+            <label class="text-sm font-normal text-black">Budget amount</label>
+            <v-text-field v-model="budget.amount" placeholder="Enter amount in $" outlined dense prefix="$" />
           </v-col>
 
           <v-col cols="12" md="4">
-            <v-text-field v-model="budget.date" label="Date" outlined dense type="date" />
+            <label class="text-sm font-normal text-black">Date</label>
+            <v-text-field v-model="budget.date" placeholder="DD/MM/YYYY" outlined dense type="date" />
           </v-col>
           <v-col cols="12" md="4">
+            <label class="text-sm font-normal text-black">Receiving office</label>
             <v-select
               v-model="budget.office"
               :items="offices"
-              label="Receiving office"
+              placeholder="Select office"
               outlined
               dense
             />
@@ -59,6 +64,7 @@
           dense
           hide-default-footer
           class="elevation-0"
+          show-select
         >
           <template #[`item.amount`]="{ item }">
             $\{{ Number(item.amount).toLocaleString() }}

@@ -5,7 +5,7 @@
     color="white"
     class="pt-6 pb-2 bg-white header"
   >
-    <v-btn icon @click="$emit('toggle-sidebar')" v-if="isMobile">
+    <v-btn v-if="isMobile" icon @click="$emit('toggle-sidebar')">
       <v-icon>mdi-menu</v-icon>
     </v-btn>
 
@@ -18,7 +18,7 @@
           {{ pageDetails().title }}
         </h1>
       </div>
-      <span class="font-normal text-sm mt-1" v-if="!isMobile">{{ pageDetails().subtitle }}</span>
+      <span v-if="!isMobile" class="font-normal text-sm mt-1">{{ pageDetails().subtitle }}</span>
     </div>
 
     <v-spacer />
@@ -120,6 +120,16 @@ export default {
           icon: 'mdi-piggy-bank',
           title: 'Create Budget',
           subtitle: 'Create and send budget request.'
+        },
+        circulars: {
+          icon: 'mdi-receipt-text',
+          title: 'Circulars',
+          subtitle: 'Search for  and view all circulars.'
+        },
+        'circulars-create': {
+          icon: 'mdi-receipt-text',
+          title: 'Create Circulars',
+          subtitle: 'Create and send circulars to designated offices.'
         }
       }
 

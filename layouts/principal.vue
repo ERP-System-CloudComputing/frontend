@@ -3,7 +3,7 @@
     <DashboardSidebarVue :is-mobile="isMobile" :drawer="drawer" @update:drawer="drawer = $event" />
     <DashboardTopbarVue :is-mobile="isMobile" @toggle-sidebar="toggleDrawer" />
 
-    <v-main class="bg-gray-fondo mt-12">
+    <v-main class="bg-gray-fondo mt-12 max-h-full">
       <div class="mx-4">
         <nuxt />
       </div>

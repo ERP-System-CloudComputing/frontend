@@ -85,8 +85,7 @@ export default {
           user: { url: '/staff/user', method: 'GET' }
         }
       }
-    },
-    baseURL: process.env.baseURL
+    }
   },
   vuetify: {
     // ✅ CONFIGURACIÓN DE ICONOS

@@ -1,6 +1,11 @@
 <template>
-  <v-navigation-drawer app permanent class="border-none">
-    <LogoERPVue class="py-14"/>
+  <v-navigation-drawer
+    app
+    v-model="localDrawer"
+    :permanent="!isMobile"
+    :temporary="isMobile"
+  >
+    <LogoERPVue class="py-14" />
 
     <v-list dense>
       <nuxt-link
@@ -12,15 +17,15 @@
         <v-list-item
           :class="[
             'my-1 ',
-            $route.path === item.path ? 'bg-blue-100 text-white border-l-4 border-blue-500' : 'hover:bg-gray-100'
+            $route.path.match(/^\/[^/]+/)[0] === item.path ? 'bg-blue-100 text-white border-l-4 border-blue-500' : 'hover:bg-gray-100'
           ]"
         >
           <v-list-item-icon class="mr-2">
-            <v-icon :color="$route.path === item.path ? 'blue darken-4' : 'black'">
+            <v-icon :color="$route.path.match(/^\/[^/]+/)[0] === item.path ? 'blue darken-4' : 'black'">
               {{ item.icon }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title :class="$route.path === item.path ? 'text-blue-800' : 'text-black'">
+          <v-list-item-title :class="$route.path.match(/^\/[^/]+/)[0] === item.path ? 'text-blue-800' : 'text-black'">
             {{ item.title }}
           </v-list-item-title>
         </v-list-item>
@@ -49,12 +54,31 @@ const menuItems = [
 ]
 
 export default {
+  props: {
+    isMobile: {
+      type: Boolean,
+      required: true
+    },
+    drawer: {
+      type: Boolean,
+      required: true
+    }
+  },
   components: {
     LogoERPVue
   },
   data () {
     return {
-      menuItems
+      menuItems,
+      localDrawer: this.drawer
+    }
+  },
+  watch: {
+    drawer (val) {
+      this.localDrawer = val
+    },
+    localDrawer (val) {
+      this.$emit('update:drawer', val)
     }
   }
 }

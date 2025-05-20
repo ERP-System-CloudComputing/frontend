@@ -11,7 +11,7 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-      colors: {
+      colors: {1
         primario: '#14ADD6',
         secundario: '#384295',
         gris_claro: '#4b5563',

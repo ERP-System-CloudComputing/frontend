@@ -90,7 +90,7 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import Swal from 'sweetalert2'
+// import Swal from 'sweetalert2'
 
 export default {
   components: { FontAwesomeIcon },
@@ -109,6 +109,7 @@ export default {
     }
   },
   methods: {
+  /*
     async login () {
       try {
         const response = await this.$axios.$post('/staff/login', {
@@ -137,6 +138,7 @@ export default {
         })
       }
     }
+    */
   }
 }
 </script>

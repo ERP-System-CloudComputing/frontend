@@ -79,7 +79,7 @@
                 class="rounded-lg"
                 outlined
                 dense
-                :rules="[required('First name',8)]"
+                :rules="[required('First name')]"
               />
             </v-col>
             <v-col cols="12" sm="6">
@@ -90,7 +90,7 @@
                 class="rounded-lg"
                 outlined
                 dense
-                :rules="[required('First name',8)]"
+                :rules="[required('First name')]"
               />
             </v-col>
           </v-row>
@@ -205,7 +205,7 @@
           </v-row>
         </v-form>
       </v-col>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="4">
         <v-row>
           <v-col class="justify-items-center text-white">
             <div class="px-3 w-full">
@@ -213,7 +213,7 @@
                 type="submit"
                 color="primary"
                 class="py-4 w-full rounded-lg bg-gradient-to-br from-primario to-secundario"
-                @click="createStaff()"
+                @click="validForm()"
               >
                 Add Staff
               </button>
@@ -327,7 +327,8 @@ export default {
       }
     },
     generateValues () {
-      const phoneConv = this.formData.phoneNumber.length >= 7 ? this.formData.phoneNumber.substr(3, 4) : '0000'
+      // Generando staffID y correo oficial
+      const phoneConv = this.formData.phoneNumber.length >= 7 ? this.formData.phoneNumber.slice(3, 7) : '0000'
       const rol = this.convertedOptions[this.formData.role] || ''
       const designation = this.convertedOptions?.[this.formData.designation] || ''
       const email = this.formData.personalEmail.split('@')[0]
@@ -335,12 +336,25 @@ export default {
       this.formData.staffID = `${phoneConv}${rol}${designation}`
     },
     // Backend
-    createStaff () {
+    validForm () {
       if (this.$refs.form.validate()) {
-        const newStaff = this.formData
-        console.log(newStaff)
+        this.createStaff()
       } else {
-        alert('Por favor completa todos los campos')
+        alert('Complete all fields')
+      }
+    },
+    async createStaff () {
+      try {
+        // console.log(this.formData)
+        await this.$axios.post('/staff/create', this.formData)
+        alert('Success')
+      } catch (error) {
+        // console.log(error)
+        const errorMessage = error.message || 'Error Staff'
+        this.$store.dispatch('alert/triggerAlert', {
+          message: errorMessage,
+          type: 'error'
+        })
       }
     }
   }

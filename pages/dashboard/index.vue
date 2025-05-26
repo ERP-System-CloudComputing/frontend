@@ -8,7 +8,7 @@
           <DashboardTable :data="memoData" />
         </v-col>
         <v-col cols="12" md="6">
-          <DashboardTable :data="memoData" />
+          <DashboardTable :data="staffData" />
         </v-col>
       </v-row>
       <v-row>
@@ -37,13 +37,39 @@ export default {
   layout: 'principal',
   data () {
     return {
-      memoData: {}
+      memoData: {},
+      staffData: {}
     }
   },
   mounted () {
     this.memoData = this.getMemoData()
+    this.getStaffListData()
   },
   methods: {
+    async getStaffListData () {
+      try {
+        const response = await this.$axios.get('/staff/getAll')
+        console.log(response.data)
+
+        this.staffData = {
+          title: 'Staff List',
+          headers: [
+            { text: 'S/N', value: 'sn' },
+            { text: 'Staff Name', value: 'name' },
+            { text: 'Staff Role', value: 'role' },
+            { text: 'Designation', value: 'designation' }
+          ],
+          items: response.data.map((staff, index) => ({
+            sn: (index + 1).toString().padStart(2, '0'),
+            name: `${staff.firstName} ${staff.lastName}`,
+            role: staff.role,
+            designation: staff.designation
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching staff data:', error)
+      }
+    },
     getMemoData () {
       return {
         title: 'Memo',

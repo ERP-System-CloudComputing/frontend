@@ -4,6 +4,7 @@
       <v-col cols="12" sm="3">
         <span>Quick search a staff</span>
         <v-text-field
+          v-model="filterName"
           class="rounded-lg"
           label="Enter search word"
           append-icon="mdi-magnify"
@@ -11,6 +12,7 @@
           hide-details
           outlined
           color="gray"
+          @change="FilterName()"
         />
       </v-col>
       <v-col cols="12" sm="3">
@@ -28,14 +30,14 @@
           Filter staff
         </span>
         <v-select
-          v-model="FilterStaff[0]"
+          placeholder="Select Option"
           solo
           flat
           hide-details
           height="58"
           background-color="#F2F7FF"
           :items="FilterStaff"
-          @change="FilterRole"
+          @input="FilterRole"
         />
       </v-col>
       <v-col cols="12" sm="3" align-self="center" align="center">
@@ -161,6 +163,7 @@ export default {
         'Human Resources staff'
       ],
       filterRole: '',
+      filterName: '',
       staffs: [],
       itemsPerPage: 12,
       page: 1,
@@ -206,6 +209,17 @@ export default {
           return this.loadStaffs()
         }
         const response = await this.$axios.get(`/staff/getByRol/${clean}`)
+        this.staffs = response.data ? [response.data] : []
+      } catch (error) {
+        // console.log(error)
+      }
+    },
+    async FilterName () {
+      try {
+        if (this.filterName === '') {
+          return this.loadStaffs()
+        }
+        const response = await this.$axios.get(`/staff/getByName/${this.filterName}`)
         this.staffs = response.data ? [response.data] : []
       } catch (error) {
         // console.log(error)

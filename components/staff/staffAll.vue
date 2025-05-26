@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="px-7 pt-10">
-    <v-row class=" rounded-xl bg-white pt-4 h-32">
+  <v-container fluid class="px-3 pt-3">
+    <v-row class=" rounded-lg bg-white pt-4 h-32">
       <v-col md="3">
         <span>Quick search a staff</span>
         <v-text-field
@@ -28,19 +28,18 @@
           Filter staff
         </span>
         <v-select
-          v-model="filterRole"
-          class=" rounded-lg"
-          label="AllStaff"
-          :items="FilterStaff"
+          v-model="FilterStaff[0]"
           solo
+          flat
+          hide-details
           height="58"
           background-color="#F2F7FF"
-          single-line
+          :items="FilterStaff"
           @change="FilterRole"
         />
       </v-col>
       <v-col align-self="center" align="center">
-        <button class=" text-white flex w-52 justify-center rounded-lg bg-gradient-to-br from-blue-400  to-blue-800 hover:from-blue-600 shadow-md p-4" @click="staffAdd">
+        <button class=" text-white sm:mt-4 flex w-52 justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="staffAdd">
           Add New Staff
         </button>
       </v-col>
@@ -72,7 +71,7 @@
                   :items="[1,6,12,18,22]"
                   dense
                   hide-details
-                  class="w-12 gradient-border "
+                  class="w-12 gradient-border"
                 />
               </div>
               <span> per page</span>

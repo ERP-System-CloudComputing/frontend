@@ -140,6 +140,11 @@ export default {
           icon: 'mdi-receipt-text',
           title: 'Create Circulars',
           subtitle: 'Create and send circulars to designated offices.'
+        },
+        payroll: {
+          icon: 'mdi-cash-multiple',
+          title: 'Add Staff',
+          subtitle: 'Generate and send payroll to account.'
         }
       }
 

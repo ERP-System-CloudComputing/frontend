@@ -1,7 +1,5 @@
 <template>
-  <v-container>
-    <login />
-  </v-container>
+  <login />
 </template>
 
 <script>

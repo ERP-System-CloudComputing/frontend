@@ -35,7 +35,9 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/tailwindcss
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/svg',
+    '@nuxtjs/vuetify'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -85,7 +87,18 @@ export default {
       }
     }
   },
-
+  vuetify: {
+    // ✅ CONFIGURACIÓN DE ICONOS
+    defaultAssets: {
+      icons: 'mdi' // Habilita Material Design Icons automáticamente
+    },
+    icons: {
+      iconfont: 'mdi' // Usa Material Design Icons
+    },
+    theme: {
+      dark: false
+    }
+  },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }

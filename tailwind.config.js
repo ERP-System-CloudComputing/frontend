@@ -1,15 +1,20 @@
 module.exports = {
-  darkMode: false, // or 'media' or 'class'
   content: [
+    './index.html',
+    './src/**/*.{vue,js,ts}',
     './components/**/*.{vue,js,ts}',
     './layouts/**/*.vue',
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
     './nuxt.config.{js,ts}'
   ],
+  darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
       colors: {
+        'azul-claro-logo': '#14ADD6',
+        'azul-oscuro-logo': '#384295',
+        'gray-fondo': '#F8F9FD',
         primario: '#14ADD6',
         secundario: '#384295',
         gris_claro: '#4b5563',

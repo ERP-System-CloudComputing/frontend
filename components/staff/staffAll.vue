@@ -104,17 +104,17 @@
                 </div>
               </template>
               <v-list>
-                <v-list-item @click="openDialog(item)">
+                <v-list-item @click="staffUpdate(item)">
                   <v-icon small class="mr-2">
                     mdi-pencil
                   </v-icon>
-                  <v-list-item-title>Editar</v-list-item-title>
+                  <v-list-item-title>Edit</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="openDialog(item)">
                   <v-icon small class="mr-2">
                     mdi-delete
                   </v-icon>
-                  <v-list-item-title>Eliminar</v-list-item-title>
+                  <v-list-item-title>Delete</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -193,6 +193,12 @@ export default {
   methods: {
     staffAdd () {
       this.$router.push('/staff/add')
+    },
+    staffUpdate (staff) {
+      // console.log(staff.id)
+      // this.$store.commit('SelectedStaffAll', staff)
+      // this.$router.push(`/staff/update/${staff.id}`)
+      this.$router.push(`/staff/update?id=${staff.id}`)
     },
     async loadStaffs () {
       try {

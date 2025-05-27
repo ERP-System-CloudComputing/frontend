@@ -121,6 +121,11 @@ export default {
           title: 'Add Staff',
           subtitle: 'Fill out the form to create a new staff member.'
         },
+        'staff-update': {
+          icon: 'mdi-account-plus',
+          title: 'Update Staff',
+          subtitle: 'Fill out the form to create a new staff member.'
+        },
         budget: {
           icon: 'mdi-piggy-bank',
           title: 'Office Budget',

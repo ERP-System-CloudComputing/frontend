@@ -140,6 +140,11 @@ export default {
           icon: 'mdi-receipt-text',
           title: 'Create Circulars',
           subtitle: 'Create and send circulars to designated offices.'
+        },
+        logistics: {
+          icon: 'mdi-truck',
+          title: 'Logistics',
+          subtitle: 'Make and send logistics request.'
         }
       }
 

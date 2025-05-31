@@ -85,6 +85,8 @@
 </template>
 
 <script>
+import swal from 'sweetalert2'
+
 export default {
   props: {
     isMobile: {
@@ -150,8 +152,47 @@ export default {
 
       return titles[route]
     },
-    logout () {
-      console.log('Logout')
+    async logout () {
+      try {
+        // console.log('Cookie antes de enviar: ', document.cookie)
+        const confirmDialog = await swal.fire({
+          title: 'Are you sure?',
+          text: 'You will be logged out of the system.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, logout!'
+        })
+
+        if (!confirmDialog.isConfirmed) {
+          return
+        }
+
+        // * 1. Hacemos peticion a backend:
+        await this.$axios.post('/staff/logout', {
+          withCredentials: true // * Enviamos credenciales al servido
+        })
+
+        // console.log('Respuesta del servidor: ', response.data) // * Respuesta del servidor
+
+        // * 2. Limpiamos almacenamiento local:
+        localStorage.removeItem('auth._token.local')
+        localStorage.removeItem('auth._token_expiration.local')
+        sessionStorage.clear()
+
+        // * 4. Rediridimos al user a login:
+        await this.$router.push('/')
+      } catch (error) {
+        swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+          footer: '<a href>Why do I have this issue?</a>'
+        })
+        // console.error('Error al cerrar sesión: ', error)
+        // console.error('Error completo: ', error.response)
+      }
     }
   }
 }

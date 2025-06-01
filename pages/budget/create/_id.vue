@@ -84,6 +84,7 @@
           hide-default-footer
           class="elevation-0"
           show-select
+          v-model="selectedBudgets"
         >
           <template #[`item.amount`]="{ item }">
             ${{ item.amount.toLocaleString('en-US', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
@@ -93,7 +94,8 @@
         <v-btn
           color="primary"
           class="mt-6 px-8 py-3 text-white font-medium"
-          :disabled="budgetList.length === 0"
+          :disabled="selectedBudgets.length === 0"
+          @click="submitForApproval"
         >
           Submit for Approval
         </v-btn>
@@ -121,6 +123,7 @@ export default {
       },
       offices: ['Head Office', 'Regional Office', 'Branch Office'],
       budgetList: [],
+      selectedBudgets: [],
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
         { text: 'Budget No.', value: 'number' },
@@ -216,6 +219,48 @@ export default {
         Swal.fire({
           title: 'Error',
           text: 'Ha ocurrido un error al crear el presupuesto. Por favor, inténtelo de nuevo más tarde.',
+          icon: 'error'
+        })
+      }
+    },
+    async submitForApproval () {
+      if (this.selectedBudgets.length === 0) {
+        Swal.fire({
+          title: 'No se han seleccionado presupuestos',
+          text: 'Por favor, seleccione al menos un presupuesto para enviar.',
+          icon: 'warning'
+        })
+        return
+      }
+
+      const selectedBudgetIds = this.selectedBudgets.map(budget => budget.id)
+
+      try {
+        const response = await this.$axios.post('/budget/submitForApproval', {
+          budgetIds: selectedBudgetIds
+        })
+
+        if (response.status === 200) {
+          Swal.fire({
+            title: 'Presupuestos Aprobados',
+            text: 'Los presupuestos seleccionados han sido aprobados.',
+            icon: 'success'
+          })
+
+          this.fetchBudgetPending() // Actualiza la lista de presupuestos pendientes
+          this.selectedBudgets = [] // Limpia la selección
+        } else {
+          Swal.fire({
+            title: 'Error al aprobar presupuestos',
+            text: 'No se pudieron enviar los presupuestos para aprobación. Por favor, inténtelo de nuevo más tarde.',
+            icon: 'error'
+          })
+        }
+      } catch (error) {
+        console.error('Error al enviar presupuestos para aprobación:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Ha ocurrido un error al enviar los presupuestos para aprobación. Por favor, inténtelo de nuevo más tarde.',
           icon: 'error'
         })
       }

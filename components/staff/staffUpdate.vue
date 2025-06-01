@@ -69,7 +69,7 @@
         </div>
       </v-col>
       <v-col cols="12" md="8">
-        <v-form ref="form" v-model="formValidar" class="-space-y-5">
+        <v-form ref="form" v-model="formValidar" class="-space-y-5" @submit.prevent="validForm()">
           <v-row>
             <v-col cols="12" sm="6">
               <span>First name</span>
@@ -195,7 +195,6 @@
                   type="submit"
                   color="primary"
                   class="py-2 w-full rounded-lg bg-gradient-to-br from-primario to-secundario"
-                  @click="validForm()"
                 >
                   Edit Profile
                 </button>
@@ -323,15 +322,13 @@ export default {
       const file = event.target.files[0]
       if (file) {
         // -Validar tamaño del archivo de 2MB
-        if (file.size > 2 * 1024 * 1024) {
-          alert('File size must be less than 2MB', 'error')
-          return
+        if (file.size > 0.8 * 1024 * 1024) {
+          return alert('File size must be less than 0.8MB', 'error')
         }
         // -Tipo de archivo
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
         if (!allowedTypes.includes(file.type)) {
-          alert('Only JPG, JPEG, and PNG files are allowed', 'error')
-          return
+          return alert('Only JPG, JPEG, and PNG files are allowed', 'error')
         }
         // -Mostrar la imagen en el circulo de v-avatar
         const reader = new FileReader()
@@ -374,11 +371,10 @@ export default {
     validForm () {
       if (this.$refs.form.validate()) {
         this.updateStaff()
-        return this.staffAll()
+        // this.staffAll()
       } else {
         alert('Complete all fields')
       }
-      this.getStaff()
     },
     async getStaff () {
       try {
@@ -392,8 +388,8 @@ export default {
       try {
         await this.$axios.put(`/staff/update/${this.formData.id}`, this.formData)
         alert('Success')
+        this.$router.push('/staff')
       } catch (error) {
-        // console.log(error)
         const errorMessage = error.message || 'Error Staff'
         this.$store.dispatch('alert/triggerAlert', {
           message: errorMessage,

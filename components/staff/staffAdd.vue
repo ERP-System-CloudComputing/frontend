@@ -288,15 +288,13 @@ export default {
       const file = event.target.files[0]
       if (file) {
         // -Validar tamaño del archivo de 2MB
-        if (file.size > 2 * 1024 * 1024) {
-          this.showSnackbar('File size must be less than 2MB', 'error')
-          return
+        if (file.size > 0.8 * 1024 * 1024) {
+          return alert('File size must be less than 0.8MB', 'error')
         }
         // -Tipo de archivo
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png']
         if (!allowedTypes.includes(file.type)) {
-          this.showSnackbar('Only JPG, JPEG, and PNG files are allowed', 'error')
-          return
+          return alert('Only JPG, JPEG, and PNG files are allowed', 'error')
         }
         // -Mostrar la imagen en el circulo de v-avatar
         const reader = new FileReader()
@@ -348,6 +346,7 @@ export default {
         // console.log(this.formData)
         await this.$axios.post('/staff/create', this.formData)
         alert('Success')
+        this.$router.push('/staff')
       } catch (error) {
         // console.log(error)
         const errorMessage = error.message || 'Error Staff'

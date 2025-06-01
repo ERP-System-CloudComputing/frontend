@@ -195,9 +195,6 @@ export default {
       this.$router.push('/staff/add')
     },
     staffUpdate (staff) {
-      // console.log(staff.id)
-      // this.$store.commit('SelectedStaffAll', staff)
-      // this.$router.push(`/staff/update/${staff.id}`)
       this.$router.push(`/staff/update?id=${staff.id}`)
     },
     async loadStaffs () {

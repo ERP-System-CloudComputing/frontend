@@ -179,6 +179,7 @@ export default {
         // * 2. Limpiamos almacenamiento local:
         localStorage.removeItem('auth._token.local')
         localStorage.removeItem('auth._token_expiration.local')
+        localStorage.clear()
         sessionStorage.clear()
 
         // * 4. Rediridimos al user a login:

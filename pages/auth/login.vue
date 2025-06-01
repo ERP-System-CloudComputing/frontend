@@ -108,6 +108,15 @@ export default {
       }
     }
   },
+  mounted () {
+    if (this.$route.query.session === 'expired') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Session expired!',
+        text: 'Your session has expired. Please log in again.'
+      })
+    }
+  },
   methods: {
     async login () {
       try {
@@ -122,16 +131,37 @@ export default {
           withCredentials: true // * Para las Cookies HTTP-only
         })
 
-        // * Guardar el token en el almacenamiento local:
-        this.$auth.setUserToken(response.accessToken)
+        // * Guardamos el estado de remembeMe
+        localStorage.setItem('rememberMe', this.user.rememberMe.toString())
+        // * Almacenamos el token en localStorage de la forma de Nuxt Auth:
+        // await this.$auth.strategy.token.set('auth._token.local', response.accessToken)
+        await this.$auth.setUserToken(response.accessToken)
+        // await localStorage.setItem('auth._token_local', response.accessToken)
 
         this.$router.push('/dashboard')
       } catch (error) {
+        this.user.personalEmail = ''
+        this.user.password = ''
+        this.user.rememberMe = false
+
         // alert(error.response?.data?.message || 'Error al iniciar sesión')
+        this.$auth.reset() // * Limpiar el estado de autenticación local
+        localStorage.removeItem('auth._token.local')
+
+        let errorMessage = 'An error occurred during login'
+
+        if (error.response) {
+          errorMessage = error.response.data.message ||
+        (error.response.status === 401
+          ? 'Invalid credentials'
+          : error.response.status === 400
+            ? 'Invalid email or password'
+            : 'Error during login')
+        }
         Swal.fire({
           icon: 'error',
           title: 'Incorrect!',
-          text: 'Opps, you have entered wrong Password or e-mail',
+          text: errorMessage,
           footer: '<a href="/auth/recover-password"> forgot your password? Click here for recover it</a>'
           // footer: '<a href="/auth/email-verified">Email not confirmed? Active your account here</a>'
         })

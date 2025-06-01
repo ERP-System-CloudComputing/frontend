@@ -103,17 +103,21 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
+import { random } from 'xe-utils'
+
 export default {
   layout: 'principal',
   data () {
     return {
       isFormValid: false,
       budget: {
-        number: '',
+        number: `${random(10000000, 99999999)}`, // Genera un número aleatorio de 8 dígitos
         description: '',
         amount: '',
         requestDate: '',
-        receivingOffice: ''
+        receivingOffice: '',
+        annualBudgetId: this.$route.params.id || '' // Obtiene el ID del presupuesto anual de la ruta
       },
       offices: ['Head Office', 'Regional Office', 'Branch Office'],
       budgetList: [],
@@ -130,24 +134,86 @@ export default {
       }
     }
   },
+  mounted () {
+    this.fetchBudgetPending()
+  },
   methods: {
+    async fetchBudgetPending () {
+      try {
+        const response = await this.$axios.get('/budget/pending')
+        if (response.status === 200) {
+          this.budgetList = response.data.map((item, index) => ({
+            ...item,
+            sn: item.id, // Agrega un campo de número de serie
+            budgetNo: item.number, // Asigna el número de presupuesto
+            amount: item.amount.toLocaleString('en-US', { style: 'currency', currency: 'MXN' }) // Formatea el monto
+          }))
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudieron cargar los presupuestos pendientes. Por favor, inténtelo de nuevo más tarde.',
+            icon: 'error'
+          })
+        }
+      } catch (error) {
+        console.error('Error al obtener presupuestos pendientes:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Ha ocurrido un error al cargar los presupuestos pendientes. Por favor, inténtelo de nuevo más tarde.',
+          icon: 'error'
+        })
+      }
+    },
     formatAmount () {
       const value = this.budget.amount.toString().replace(/,/g, '') // quitar comas si las hay
       const number = parseFloat(value)
 
       if (!isNaN(number)) {
-        this.budget.amount = number.toFixed(2) // guarda con dos decimales
+        // Si hay mas de 3 dígitos, formatea con comas
+        this.budget.amount = number.toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'MXN',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).replace('MX$', '') // Elimina el símbolo de moneda para que no se envíe al servidor
       } else {
         this.budget.amount = ''
       }
     },
-    createBudget () {
-      if (!this.$refs.form.validate()) {
-        console.warn('Formulario inválido')
-        return
-      }
+    async createBudget () {
+      try {
+        if (!this.$refs.form.validate()) {
+          console.warn('Formulario inválido')
+          return
+        }
 
-      console.log(this.budget)
+        const resultado = await this.$axios.post('/budget/create', this.budget)
+        if (resultado.status === 201) {
+          Swal.fire({
+            title: 'Presupuesto creado con éxito',
+            text: 'El presupuesto ha sido creado correctamente.',
+            icon: 'success'
+          })
+        } else {
+          Swal.fire({
+            title: 'Ha ocurrido un error',
+            text: 'No se pudo crear el presupuesto. Por favor, inténtelo de nuevo más tarde.',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.$router.push('/budget')
+            }
+          })
+        }
+      } catch (error) {
+        console.error('Error al crear el presupuesto:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Ha ocurrido un error al crear el presupuesto. Por favor, inténtelo de nuevo más tarde.',
+          icon: 'error'
+        })
+      }
     }
   }
 }

@@ -3,10 +3,12 @@
     <BudgetCardsVue />
 
     <div class="flex justify-between items-center flex-col sm:flex-row mt-6 bg-white py-9 px-5 rounded-2xl shadow-sm">
-      <h3 class="text-xl font-semibold">Create a Budget</h3>
+      <h3 class="text-xl font-semibold">
+        Create a Budget
+      </h3>
 
       <nuxt-link
-        to="/budget/create"
+        :to="`/budget/create/${anualBudget.id}`"
         class="px-16 py-3 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
               hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white"
       >
@@ -42,6 +44,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 import BudgetCardsVue from '~/components/budget/BudgetCards.vue'
 
 export default {
@@ -51,6 +54,7 @@ export default {
   layout: 'principal',
   data () {
     return {
+      anualBudget: {},
       headers: [
         { text: 'S/N', value: 'sn', width: 70 },
         { text: 'Budget No.', value: 'budgetNo' },
@@ -71,9 +75,35 @@ export default {
       ]
     }
   },
+  mounted () {
+    this.getAnualBudget()
+  },
   methods: {
     formatCurrency (amount) {
       return amount.toLocaleString('en-NG', { style: 'currency', currency: 'MXN' })
+    },
+    async getAnualBudget () {
+      try {
+        const year = new Date().getFullYear()
+        const response = await this.$axios.get(`/anualBudget/year/${year}`)
+
+        if (response.status === 200 && response.data) {
+          this.anualBudget = response.data
+        } else {
+          Swal.fire({
+            icon: 'info',
+            title: 'No Annual Budget Found',
+            text: `No se encontró un presupuesto anual para el año ${year}. Por favor, cree uno primero.`
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching annual budget:', error)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ha ocurrido un error al obtener el presupuesto anual. Por favor, inténtelo de nuevo más tarde.'
+        })
+      }
     }
   }
 }

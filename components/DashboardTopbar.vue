@@ -12,10 +12,10 @@
     <div class="flex flex-col">
       <div class="flex items-center">
         <v-icon v-if="pageDetails().icon" class="mr-2" color="blue darken-4">
-          {{ pageDetails().icon }}
+          {{ pageDetails().icon ? pageDetails().icon : 'mdi-home' }}
         </v-icon>
         <h1 class="font-extrabold text-xl">
-          {{ pageDetails().title }}
+          {{ pageDetails().title ? pageDetails().title : 'Dashboard' }}
         </h1>
       </div>
       <span v-if="!isMobile" class="font-normal text-sm mt-1">{{ pageDetails().subtitle }}</span>
@@ -126,7 +126,7 @@ export default {
           title: 'Office Budget',
           subtitle: 'View, create and send budget request.'
         },
-        'budget-create': {
+        'budget-create-id': {
           icon: 'mdi-piggy-bank',
           title: 'Create Budget',
           subtitle: 'Create and send budget request.'

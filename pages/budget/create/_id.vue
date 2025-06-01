@@ -86,7 +86,7 @@
           show-select
         >
           <template #[`item.amount`]="{ item }">
-            $\{{ Number(item.amount).toLocaleString() }}
+            ${{ item.amount.toLocaleString('en-US', { style: 'currency', currency: 'MXN', minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
           </template>
         </v-data-table>
 
@@ -123,7 +123,7 @@ export default {
       budgetList: [],
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
-        { text: 'Budget No.', value: 'budgetNo' },
+        { text: 'Budget No.', value: 'number' },
         { text: 'Budget Description', value: 'description' },
         { text: 'Budget Amount (MXN)', value: 'amount' },
         { text: 'Date', value: 'date' }
@@ -140,13 +140,16 @@ export default {
   methods: {
     async fetchBudgetPending () {
       try {
-        const response = await this.$axios.get('/budget/pending')
+        const response = await this.$axios.get('/budget/getAllPending')
         if (response.status === 200) {
           this.budgetList = response.data.map((item, index) => ({
             ...item,
-            sn: item.id, // Agrega un campo de número de serie
-            budgetNo: item.number, // Asigna el número de presupuesto
-            amount: item.amount.toLocaleString('en-US', { style: 'currency', currency: 'MXN' }) // Formatea el monto
+            sn: index + 1,
+            date: new Date(item.requestDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
           }))
         } else {
           Swal.fire({
@@ -194,6 +197,8 @@ export default {
             text: 'El presupuesto ha sido creado correctamente.',
             icon: 'success'
           })
+
+          this.fetchBudgetPending() // Actualiza la lista de presupuestos pendientes
         } else {
           Swal.fire({
             title: 'Ha ocurrido un error',

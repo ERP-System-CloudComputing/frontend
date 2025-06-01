@@ -1,6 +1,6 @@
 <template>
   <div class="my-5">
-    <BudgetCardsVue />
+    <BudgetCardsVue v-if="anualBudget.actualAmount" :anualBudget="anualBudget" />
 
     <div class="flex justify-between items-center flex-col sm:flex-row mt-6 bg-white py-9 px-5 rounded-2xl shadow-sm">
       <h3 class="text-xl font-semibold">
@@ -67,9 +67,17 @@ export default {
       budgets: []
     }
   },
-  mounted () {
-    this.getAnualBudget()
-    this.getBudgetsApproved()
+  async mounted () {
+    try {
+      await this.getAnualBudget()
+
+      // Solo obtener presupuestos aprobados si el presupuesto anual se cargó correctamente
+      if (this.anualBudget && this.anualBudget.id) {
+        await this.getBudgetsApproved()
+      }
+    } catch (error) {
+      console.error('Error en el hook mounted:', error)
+    }
   },
   methods: {
     formatCurrency (amount) {
@@ -81,11 +89,13 @@ export default {
         const response = await this.$axios.get(`/anualBudget/year/${year}`)
 
         if (response.status === 200 && response.data) {
-          this.anualBudget = response.data
+          const dataAnualBudget = response.data
+
+          this.anualBudget = dataAnualBudget
         } else {
           Swal.fire({
             icon: 'info',
-            title: 'No Annual Budget Found',
+            title: 'Error al obtener presupuesto anual',
             text: `No se encontró un presupuesto anual para el año ${year}. Por favor, cree uno primero.`
           })
         }
@@ -112,6 +122,16 @@ export default {
             }),
             variance: parseFloat(item.actualAmount) - parseFloat(item.amount.replace(/,/g, ''))
           }))
+
+          const totalAmount = this.budgets.reduce(
+            (sum, budget) => sum + parseFloat(budget.amount.replace(/,/g, '')),
+            0
+          )
+
+          // Solo modificas campos derivados, sin reemplazar el objeto completo
+          this.anualBudget.actualAmount = totalAmount
+          this.anualBudget.totalBudgetBalance = this.anualBudget.totalAmount - totalAmount
+          this.anualBudget.budgetUsedPercentage = ((totalAmount / this.anualBudget.totalAmount) * 100).toFixed(2) + '%'
         } else {
           Swal.fire({
             title: 'Error',

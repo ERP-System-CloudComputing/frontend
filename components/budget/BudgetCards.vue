@@ -24,34 +24,49 @@
 
 <script>
 export default {
+  props: {
+    anualBudget: {
+      type: Object
+    }
+  },
   data () {
     return {
       cards: [
         {
-          value: '$23,000,000',
+          value: this.formatCurrency(this.anualBudget.totalAmount || 0),
           label: 'Total annual budget',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: '$10,000,000',
+          value: this.formatCurrency(this.anualBudget.actualAmount || 0),
           label: 'Amount used, YTD',
           iconBg: 'bg-yellow-100',
           iconColor: 'orange'
         },
         {
-          value: '$13,000,000',
+          value: this.formatCurrency(this.anualBudget.totalBudgetBalance || 0),
           label: 'Total budget balance',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: '48%',
+          value: `${this.anualBudget.budgetUsedPercentage || 0}%`,
           label: 'Budget % used',
           iconBg: 'bg-green-100',
           iconColor: 'green'
         }
       ]
+    }
+  },
+  methods: {
+    formatCurrency (value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'MXN',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(value).replace('MX', '')
     }
   }
 }

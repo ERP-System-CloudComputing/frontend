@@ -30,7 +30,7 @@
             <td>{{ item.sn }}</td>
             <td>{{ item.budgetNo }}</td>
             <td>{{ item.description }}</td>
-            <td>{{ formatCurrency(item.budgetedAmount) }}</td>
+            <td>{{ formatCurrency(item.amount) }}</td>
             <td>{{ formatCurrency(item.actualAmount) }}</td>
             <td :class="item.variance >= 0 ? 'text-green-600' : 'text-red-600'">
               {{ item.variance >= 0 ? '+' : '' }}{{ formatCurrency(item.variance) }}
@@ -57,26 +57,19 @@ export default {
       anualBudget: {},
       headers: [
         { text: 'S/N', value: 'sn', width: 70 },
-        { text: 'Budget No.', value: 'budgetNo' },
+        { text: 'Budget No.', value: 'number' },
         { text: 'Budget Description', value: 'description' },
-        { text: 'Budgeted Amount (MXN)', value: 'budgetedAmount' },
+        { text: 'Budgeted Amount (MXN)', value: 'amount' },
         { text: 'Actual Amount (MXN)', value: 'actualAmount' },
         { text: 'Variance (MXN)', value: 'variance' },
         { text: 'Date', value: 'date' }
       ],
-      budgets: [
-        { sn: '01', budgetNo: '03211235', description: 'Purchase of 10 units, 2Hp Hisense Air Conditions', budgetedAmount: 1400000, actualAmount: 1380000, variance: 20000, date: '18/11/2022' },
-        { sn: '02', budgetNo: '36211235', description: 'Purchase of office equipments', budgetedAmount: 4000000, actualAmount: 4000000, variance: 0, date: '20/09/2022' },
-        { sn: '03', budgetNo: '06211235', description: 'Purchase of 10 units, 2Hp Hisense Air Conditions', budgetedAmount: 2000000, actualAmount: 1800000, variance: 200000, date: '01/09/2022' },
-        { sn: '04', budgetNo: '04214685', description: 'Purchase of 10 units, 2Hp Hisense Air Conditions', budgetedAmount: 1400000, actualAmount: 1380000, variance: 20000, date: '11/06/2022' },
-        { sn: '05', budgetNo: '36211235', description: 'Purchase of office equipments', budgetedAmount: 400000, actualAmount: 500000, variance: -100000, date: '20/09/2022' },
-        { sn: '06', budgetNo: '06211235', description: 'Purchase of 10 units, 2Hp Hisense Air Conditions', budgetedAmount: 1400000, actualAmount: 1380000, variance: 20000, date: '18/11/2022' },
-        { sn: '07', budgetNo: '03211235', description: 'Purchase of 10 units, 2Hp Hisense Air Conditions', budgetedAmount: 1400000, actualAmount: 1380000, variance: 20000, date: '18/11/2022' }
-      ]
+      budgets: []
     }
   },
   mounted () {
     this.getAnualBudget()
+    this.getBudgetsApproved()
   },
   methods: {
     formatCurrency (amount) {
@@ -102,6 +95,36 @@ export default {
           icon: 'error',
           title: 'Error',
           text: 'Ha ocurrido un error al obtener el presupuesto anual. Por favor, inténtelo de nuevo más tarde.'
+        })
+      }
+    },
+    async getBudgetsApproved () {
+      try {
+        const response = await this.$axios.get('/budget/getAllApproved')
+        if (response.status === 200) {
+          this.budgets = response.data.map((item, index) => ({
+            ...item,
+            sn: index + 1,
+            date: new Date(item.requestDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            }),
+            variance: parseFloat(item.actualAmount) - parseFloat(item.amount.replace(/,/g, ''))
+          }))
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudieron cargar los presupuestos aprobados. Por favor, inténtelo de nuevo más tarde.',
+            icon: 'error'
+          })
+        }
+      } catch (error) {
+        console.error('Error al obtener presupuestos aprobados:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Ha ocurrido un error al cargar los presupuestos aprobados. Por favor, inténtelo de nuevo más tarde.',
+          icon: 'error'
         })
       }
     }

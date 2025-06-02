@@ -20,13 +20,6 @@ export default {
   css: [
   ],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/fortawesome.js',
-    '~/plugins/vxe-table.js',
-    '~/plugins/tokensExpired.js'
-  ],
-
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
@@ -46,6 +39,14 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
     '@nuxtjs/tailwindcss'
+  ],
+
+  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
+  plugins: [
+    '~/plugins/fortawesome.js',
+    '~/plugins/vxe-table.js',
+    '~/plugins/tokensExpired.js',
+    '~/plugins/auth.js'
   ],
 
   tailwindcss: {
@@ -70,9 +71,15 @@ export default {
       local: {
         token: {
           property: 'accessToken',
-          maxAge: 20 * 60,
+          maxAge: 1200, // * 20 min (segundos)
           global: true,
           required: true,
+          type: 'Bearer'
+        },
+        refreshToken: {
+          property: 'refreshToken',
+          maxAge: 172800, // * 2 dias (segundos)
+          global: true,
           type: 'Bearer'
         },
         user: {
@@ -80,12 +87,23 @@ export default {
           autoFetch: true
         },
         endpoints: {
-          login: { url: '/staff/login', method: 'POST', propertyName: 'accessToken' },
-          logout: { url: '/staff/logout', method: 'POST' },
-          user: { url: '/staff/user', method: 'GET' }
+          login: { url: '/staff/login', method: 'POST', propertyName: false },
+          logout: false,
+          refreshToken: {
+            url: '/staff/refresh-token',
+            method: 'POST',
+            propertyName: 'accessToken'
+          },
+          user: false
         }
       }
-    }
+    },
+    redirect: {
+      login: '/',
+      logout: '/',
+      home: '/dashboard'
+    },
+    resetOnError: true
   },
   vuetify: {
     // ✅ CONFIGURACIÓN DE ICONOS

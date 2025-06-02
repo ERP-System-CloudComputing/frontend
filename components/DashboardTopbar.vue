@@ -126,6 +126,11 @@ export default {
           title: 'Update Staff',
           subtitle: 'Fill out the form to create a new staff member.'
         },
+        vouchers: {
+          icon: 'mdi-cash',
+          title: 'Payment Voucher',
+          subtitle: 'Create payment voucher'
+        },
         budget: {
           icon: 'mdi-piggy-bank',
           title: 'Office Budget',

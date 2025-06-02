@@ -6,8 +6,8 @@
           Payment Voucher
         </h1>
       </v-col>
-      <v-col cols="12" sm="3">
-        <span>
+      <v-col cols="12" md="3" class="sm:space-y-3">
+        <span class="text-gray-600">
           Subject
         </span>
         <v-text-field
@@ -28,9 +28,9 @@
           dense
         >
           <template #footer>
-            <v-row>
-              <v-col cols="12" sm="2">
-                <div class="border border-gray-300 rounded-xl p-4">
+            <v-row class=" border-b-2">
+              <v-col cols="12" md="2">
+                <div class="border border-gray-300 rounded-xl p-4 hover:bg-gray-100">
                   <button>
                     <v-icon>
                       mdi-plus
@@ -72,10 +72,56 @@
           Net amount in words:{{ '--' }}
         </span>
       </v-col>
+      <v-col cols="12">
+        <h1 class="font-bold text-lg">
+          Beneficiary Payment Details
+        </h1>
+      </v-col>
+      <v-col>
+        <v-row>
+          <v-col cols="12" sm="4">
+            <span>
+              Account name
+            </span>
+            <v-text-field
+              class="rounded-lg"
+              placeholder="Enter name"
+              dense
+              outlined
+            />
+          </v-col>
+          <v-col cols="12" sm="4">
+            <span>
+              Account number
+            </span>
+            <v-text-field
+              class="rounded-lg"
+              placeholder="Enter number"
+              dense
+              outlined
+            />
+          </v-col>
+          <v-col cols="12" sm="4">
+            <span>
+              Bank name
+            </span>
+            <v-text-field
+              class="rounded-lg"
+              placeholder="Enter bank name"
+              dense
+              outlined
+            />
+          </v-col>
+        </v-row>
+      </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12">
-        <h1>Beneficiary Payment Details</h1>
+      <v-col cols="12" md="3">
+        <div>
+          <button class=" text-white w-full sm:mt-4 justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4">
+            Submit Payment Voucher
+          </button>
+        </div>
       </v-col>
     </v-row>
   </v-container>

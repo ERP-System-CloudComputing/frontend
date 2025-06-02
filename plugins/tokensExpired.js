@@ -1,26 +1,40 @@
-export default function ({ $axios, $auth, redirect }) {
-  $axios.onError(async (error) => {
-    const originalRequest = error.config
+export default function ({ $axios, $auth }) {
+  $axios.onRequest((config) => {
+    if ($auth && $auth.loggedIn) {
+      const token = $auth.strategy.token.get()
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+    }
+    return config
+  })
 
+  $axios.onError(async (error) => {
     // * Si el error es de tipo 401 y no se ha intentado refrezcar el token:
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true
 
       try {
         // * Intentamos refrezcar el token:
-        const { accessToken } = await $axios.$post('/staff/refresh-token', {}, {
+        const response = await $axios.$post('/staff/refresh-token', {
+          refreshToken: $auth.strategy.refreshToken.get()
+        }, {
           withCredentials: true
         })
 
-        // * Almacenamos el nuevo token.
-        $auth.setUserToken(accessToken)
+        const { accessToken, refreshToken } = response
+
+        // * Actualizamos los nuevos tokens.
+        await $auth.strategy.token.set(accessToken)
+        await $auth.strategy.refreshToken.set(refreshToken)
 
         // * Volvemos a realizar la petición original:
-        originalRequest.headers.Autorization = `Bearer ${accessToken}`
-        return $axios(originalRequest)
+        error.config.headers.Authorization = `Bearer ${accessToken}`
+        return $axios(error.config)
       } catch (refreshError) {
         await $auth.logout()
-        redirect('/?sesion=expired&reason=inactivity')
+        localStorage.removeItem('auth.accessToken')
+        sessionStorage.removeItem('auth.accessToken')
         return Promise.reject(refreshError)
       }
     }

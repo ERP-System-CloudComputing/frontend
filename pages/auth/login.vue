@@ -131,12 +131,17 @@ export default {
           withCredentials: true // * Para las Cookies HTTP-only
         })
 
+        if (this.user.rememberMe) {
+          // await localStorage.setItem('auth.accessToken', response.accessToken)
+          await this.$auth.setUserToken(response.accessToken) // * Guardamos el token en el almacenamiento local de Nuxt Auth
+        } else {
+          // * Almacenamos el token en sessionStorage de la forma de Nuxt Auth:
+          await this.$auth.setUserToken(response.accessToken)
+          // await sessionStorage.setItem('auth.accessToken', response.accessToken)
+        }
+
         // * Guardamos el estado de remembeMe
         localStorage.setItem('rememberMe', this.user.rememberMe.toString())
-        // * Almacenamos el token en localStorage de la forma de Nuxt Auth:
-        // await this.$auth.strategy.token.set('auth._token.local', response.accessToken)
-        await this.$auth.setUserToken(response.accessToken)
-        // await localStorage.setItem('auth._token_local', response.accessToken)
 
         this.$router.push('/dashboard')
       } catch (error) {
@@ -147,6 +152,9 @@ export default {
         // alert(error.response?.data?.message || 'Error al iniciar sesión')
         this.$auth.reset() // * Limpiar el estado de autenticación local
         localStorage.removeItem('auth._token.local')
+        localStorage.removeItem('rememberMe')
+        sessionStorage.removeItem('auth.accessToken')
+        localStorage.removeItem('auth._token_expiration.local')
 
         let errorMessage = 'An error occurred during login'
 

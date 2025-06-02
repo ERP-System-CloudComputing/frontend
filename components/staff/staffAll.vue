@@ -51,7 +51,7 @@
     <v-row class="mt-7 bg-white rounded-xl">
       <v-col>
         <v-data-table
-          class="w-full rounded-xl "
+          class="w-full rounded-xl"
           :headers="headers"
           :items="staffs"
           :items-per-page="itemsPerPage"

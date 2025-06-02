@@ -131,6 +131,11 @@ export default {
           title: 'Payment Voucher',
           subtitle: 'Create payment voucher'
         },
+        'vouchers-add': {
+          icon: 'mdi-cash',
+          title: 'Payment Voucher',
+          subtitle: 'Create payment voucher'
+        },
         budget: {
           icon: 'mdi-piggy-bank',
           title: 'Office Budget',

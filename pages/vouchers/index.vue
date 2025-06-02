@@ -20,7 +20,7 @@
           solo
           flat
           hide-details
-          height="58"
+          height="57"
           background-color="#F2F7FF"
           :items="filterVouchers"
           @input="fVoucher"
@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="12" sm="3" align-self="center" align="center">
         <div class="w-full">
-          <button class=" text-white w-full sm:w-auto sm:mt-4 flex justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="staffAdd">
+          <button class=" text-white w-full sm:w-auto sm:mt-4 flex justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="$router.push('vouchers/add')">
             Create Payment Voucher
           </button>
         </div>
@@ -135,6 +135,8 @@ export default {
     pageCount () {
       return Math.ceil(this.vouchers.length / this.itemsPerPage)
     }
+  },
+  methods: {
   }
 }
 </script>

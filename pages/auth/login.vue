@@ -33,7 +33,7 @@
             type="text"
             name="email"
             placeholder="Enter email address"
-            class="w-full p-2 border border-gray-300 rounded-md"
+            class="w-full p-2 border border-gray-300 rounded-md border-solid"
             required
           >
         </div>
@@ -46,7 +46,7 @@
             :type="showPassword ? 'text' : 'password'"
             name="password"
             placeholder="**********"
-            class="w-full p-2 border border-gray-300 rounded-md"
+            class="w-full p-2 border border-gray-300 rounded-md border-solid"
             required
           >
           <button
@@ -64,7 +64,7 @@
 
         <div class="mt-8 flex justify-between items-center">
           <label class="inline-flex items-center">
-            <input v-model="user.rememberMe" type="checkbox" class="mr-1">
+            <input v-model="user.rememberMe" type="checkbox" class="mr-1 border-solid">
             <span>Remember me</span>
           </label>
           <NuxtLink to="/auth/recover-password" class="text-primario hover:scale-105 transform duration-500">

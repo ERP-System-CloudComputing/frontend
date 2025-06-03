@@ -41,8 +41,6 @@
     </div>
 
     <v-card class="mt-6">
-      <v-card-title>Budget Request</v-card-title>
-
       <v-card-text>
         <v-data-table
           class="w-full rounded-xl "
@@ -60,7 +58,7 @@
           <template #top>
             <v-toolbar class="bg-blue rounded-xl" flat>
               <v-toolbar-title class="font-bold">
-                All Staff
+                All Circulars
               </v-toolbar-title>
               <v-spacer />
               <div class="flex items-center justify-end text-sm space-x-2">
@@ -77,6 +75,14 @@
                 <span> per page</span>
               </div>
             </v-toolbar>
+          </template>
+          <template #[`item.action`]>
+            <nuxt-link
+              :to="`/circulars/${circulars.id}`"
+              class="hover:underline"
+            >
+              View more
+            </nuxt-link>
           </template>
           <template #footer>
             <div class="flex justify-between items-center px-4 py-2 ">

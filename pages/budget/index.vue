@@ -28,7 +28,7 @@
         <template #item="{ item }">
           <tr>
             <td>{{ item.sn }}</td>
-            <td>{{ item.budgetNo }}</td>
+            <td>{{ item.number }}</td>
             <td>{{ item.description }}</td>
             <td>{{ formatCurrency(item.amount) }}</td>
             <td>{{ formatCurrency(item.actualAmount) }}</td>
@@ -115,6 +115,7 @@ export default {
           this.budgets = response.data.map((item, index) => ({
             ...item,
             sn: index + 1,
+            number: item.number,
             date: new Date(item.requestDate).toLocaleDateString('en-US', {
               year: 'numeric',
               month: '2-digit',
@@ -122,6 +123,8 @@ export default {
             }),
             variance: parseFloat(item.actualAmount) - parseFloat(item.amount.replace(/,/g, ''))
           }))
+
+          console.log(this.budgets)
 
           const totalAmount = this.budgets.reduce(
             (sum, budget) => sum + parseFloat(budget.amount.replace(/,/g, '')),

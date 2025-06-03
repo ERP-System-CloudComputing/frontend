@@ -396,6 +396,7 @@ export default {
       }
     },
     openDialog () {
+      this.formValidar = false
       this.confirmDialog = true
       this.formBuyData = {
         classbuy: '',
@@ -413,6 +414,25 @@ export default {
     },
     closeDialog () {
       this.confirmDialog = false
+      this.formValidar = false
+      this.formBuyData = {
+        classbuy: '',
+        description: '',
+        qty: '',
+        unitPrice: '',
+        amount: '',
+        vat: '',
+        vatAmount: '',
+        grossAmount: '',
+        wht: '',
+        whtAmount: '',
+        netAmount: ''
+      }
+      this.$nextTick(() => {
+        if (this.$refs.formReg) {
+          this.$refs.formReg.resetValidation()
+        }
+      })
     },
     createBuy () {
       this.formBuyDataList.push({ ...this.formBuyData })

@@ -280,7 +280,7 @@ export default {
     return {
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
-        { text: 'Class', value: 'class' },
+        { text: 'Class', value: 'classbuy' },
         { text: 'Description', value: 'description' },
         { text: 'QTY', value: 'qty' },
         { text: 'Unit Price (N)', value: 'unitPrice' },

@@ -84,13 +84,13 @@
                 </div>
               </template>
               <v-list>
-                <v-list-item @click="staffUpdate(item)">
+                <v-list-item @click="openDialog('show', item)">
                   <v-icon small class="mr-2">
                     mdi-pencil
                   </v-icon>
                   <v-list-item-title>Edit</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="openDialog(item)">
+                <v-list-item @click="openDialog('delete', item)">
                   <v-icon small class="mr-2">
                     mdi-delete
                   </v-icon>
@@ -108,6 +108,59 @@
         </div>
       </v-col>
     </v-row>
+    <v-dialog v-model="dialogShow" persistent max-width="800px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h6">
+            Show Voucher
+          </span>
+        </v-card-title>
+        <v-card-text>
+          <v-data-table
+            class="w-full rounded-lg"
+            :headers="headersVoucher"
+            :items="formBuyData"
+            hide-default-footer
+            dense
+          />
+        </v-card-text>
+        <v-card-actions>
+          <div class="sm:flex w-full sm:justify-center">
+            <button class=" text-white sm:w-52 w-full sm:mt-4 justify-center rounded-lg bg-gradient-to-br from-yellow-500 to-red-800 hover:from-red-900 shadow-md p-4" @click="closeDialog()">
+              back
+            </button>
+          </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="confirmDialog" persistent max-width="300px">
+      <v-card color="indigo lighten-5">
+        <v-card-title>
+          Delete Voucher
+        </v-card-title>
+        <v-card-text class="justify-items-center">
+          <template v-if="selectVoucher">
+            <div class="justify-items-center">
+              Are you sure you want to delete
+            </div>
+            <strong>{{ selectVoucher.subject }}</strong>?
+          </template>
+          <template v-else>
+            loading staff...
+          </template>
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex space-x-4 justify-items-center">
+            <button class=" text-white w-full sm:mt-4 justify-center rounded-lg bg-gradient-to-br from-yellow-500 to-red-800 hover:from-red-900 shadow-md p-4" @click="closeDialog()">
+              Cancel
+            </button>
+            <button class=" text-white w-full sm:mt-4 justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="deleteVoucher()">
+              Delete
+            </button>
+          </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -124,12 +177,29 @@ export default {
         { text: 'send To', value: 'sendTo' },
         { text: 'Action', value: 'actions' }
       ],
+      headersVoucher: [
+        { text: 'S/N', value: 'sn', sortable: false },
+        { text: 'Class', value: 'classbuy' },
+        { text: 'Description', value: 'description' },
+        { text: 'QTY', value: 'qty' },
+        { text: 'Unit Price (N)', value: 'unitPrice' },
+        { text: 'Amount', value: 'amount' },
+        { text: 'Vat %', value: 'vat' },
+        { text: 'Vat Amount (N)', value: 'vatAmount' },
+        { text: 'Gross Amount (N)', value: 'grossAmount' },
+        { text: 'WHT (%)', value: 'wht' },
+        { text: 'WHT Amount', value: 'whtAmount' },
+        { text: 'Net Amount', value: 'netAmount' }
+      ],
       filterVouchers: [
         'All memos'
       ],
+      formBuyData: [],
       itemsPerPage: 12,
       page: 1,
       fVoucher: '',
+      dialogShow: false,
+      selectVoucher: null,
       vouchers: []
     }
   },
@@ -149,6 +219,37 @@ export default {
       } catch (error) {
         // console.log(error)
       }
+    },
+    async showProductsVoucher (voucher) {
+      try {
+        // console.log(voucher.id)
+        const all = await this.$axios.get(`/vouchers/getById/${voucher.id}`)
+        this.formBuyData = all.data
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async deleteVoucher () {
+      try {
+        await this.$axios.delete(`/vouchers/delete/${this.selectVoucher.id}`)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    openDialog (mode, voucher = null) {
+      this.dialogMode = mode
+      if (mode === 'delete' && voucher) {
+        this.confirmDialog = true
+        this.selectVoucher = voucher
+      } else if (mode === 'show' && voucher) {
+        this.dialogShow = true
+        this.showProductsVoucher(voucher)
+      }
+    },
+    closeDialog () {
+      this.confirmDialog = false
+      this.dialogShow = false
+      this.selectVoucher = null
     }
   }
 }

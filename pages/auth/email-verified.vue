@@ -85,6 +85,7 @@ export default {
       const token = this.$route.query.token // * obtenemos el token de la url despues del -> ?
       if (!token) {
         this.showAlert('Token not found or not provided')
+        this.$router.push('/')
         return
       }
       try {

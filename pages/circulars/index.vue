@@ -5,16 +5,17 @@
         <div class="w-full md:max-w-xs">
           <label class="text-sm font-normal">Quick search a circular</label>
           <v-text-field
-            v-model="search"
+            v-model="selectFilters.search"
             placeholder="Enter search word"
             outlined
             dense
             append-icon="mdi-magnify"
+            @input="filterCirculars"
           />
         </div>
         <div class="">
           <div class="text-2xl font-extrabold">
-            250
+            {{ circulars.length }}
           </div>
           <div class="text-sm text-gray-500">
             Total circulars
@@ -23,11 +24,12 @@
         <div>
           <label class="text-sm font-normal">Filter circulars</label>
           <v-select
-            v-model="selectedFilter"
+            v-model="selectFilters.selectedFilter"
             :items="filters"
             placeholder="All memos"
             outlined
             dense
+            @change="filterCirculars"
           />
         </div>
         <nuxt-link
@@ -40,7 +42,7 @@
       </div>
     </div>
 
-    <v-card class="mt-6">
+    <v-card class="mt-6" flat>
       <v-card-text>
         <v-data-table
           class="w-full rounded-xl "
@@ -82,12 +84,13 @@
             </v-icon>
           </template>
           <template #[`item.action`]="{ item }">
-            <nuxt-link
-              :to="`/circulars/${item.id}`"
-              class="hover:underline"
+            <span
+              class="text-blue-600 hover:text-blue-800 cursor-pointer"
+              text
+              @click="openModal(item)"
             >
-              View more
-            </nuxt-link>
+              View More
+            </span>
           </template>
           <template #footer>
             <div class="flex justify-between items-center px-4 py-2 ">
@@ -100,6 +103,37 @@
         </v-data-table>
       </v-card-text>
     </v-card>
+
+    <v-dialog v-model="viewMoreDialog" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="text-h6">{{ selectedCircular.title }}</span>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="viewMoreDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+
+        <v-card-text>
+          <p><strong>Enviado desde:</strong> {{ selectedCircular.sentFrom }}</p>
+          <p><strong>Enviado a:</strong> {{ selectedCircular.sentTo }}</p>
+          <p><strong>Fecha:</strong> {{ selectedCircular.date }}</p>
+          <p><strong>Tipo:</strong> {{ selectedCircular.type }}</p>
+
+          <v-divider class="my-3"></v-divider>
+
+          <p><strong>Mensaje:</strong></p>
+          <v-alert type="info" border="left" colored-border>
+            {{ selectedCircular.message }}
+          </v-alert>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="viewMoreDialog = false">Cerrar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -110,10 +144,21 @@ export default {
   layout: 'principal',
   data () {
     return {
+      viewMoreDialog: false,
       itemsPerPage: 12,
       page: 1,
-      selectedFilter: '',
-      search: '',
+      selectFilters: {
+        search: '',
+        selectedFilter: 'All memos'
+      },
+      selectedCircular: {
+        title: '',
+        sentFrom: [],
+        sentTo: [],
+        date: '',
+        type: '',
+        message: ''
+      },
       filters: ['All memos', 'Sent', 'Received'],
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
@@ -124,6 +169,7 @@ export default {
         { text: 'Circular Type', value: 'type' },
         { text: 'Action', value: 'action', sortable: false }
       ],
+      allCirculars: [], // Store all circulars fetched from the API
       circulars: []
     }
   },
@@ -136,7 +182,7 @@ export default {
         const response = await this.$axios.get('/circular/getAll')
         const { data } = response
 
-        this.circulars = [
+        this.allCirculars = [
           ...data.map(circular => ({
             ...circular,
             sn: this.circulars.length + 1, // Assign a serial number
@@ -148,7 +194,7 @@ export default {
           }))
         ]
 
-        console.log(this.circulars)
+        this.circulars = [...this.allCirculars]
       } catch (error) {
         Swal.fire({
           icon: 'error',
@@ -156,6 +202,23 @@ export default {
           text: error.message || 'An error occurred while fetching circulars.'
         })
       }
+    },
+    filterCirculars () {
+      // Filtrar tanto search como selectedFilter
+      const search = this.selectFilters.search.toLowerCase()
+      const selectedFilter = this.selectFilters.selectedFilter
+
+      this.circulars = this.allCirculars.filter((circular) => {
+        const searchMatch = circular.title.toLowerCase().includes(search)
+        const filterMatch = selectedFilter === 'All memos' ||
+          (selectedFilter === 'Sent' && circular.type === 'Sent') ||
+          (selectedFilter === 'Received' && circular.type === 'Received')
+        return searchMatch && filterMatch
+      })
+    },
+    openModal (circular) {
+      this.selectedCircular = { ...circular }
+      this.viewMoreDialog = true
     }
   },
   computed: {

@@ -1,5 +1,5 @@
 <template>
-  <divh>
+  <div>
     <div class="mb-4">
       <nuxt-link to="/circulars" class="text-blue-500 font-semibold text-sm">
         <v-icon left color="#1976d2">
@@ -77,7 +77,7 @@
         </v-form>
       </v-card-text>
     </v-card>
-  </divh>
+  </div>
 </template>
 
 <script>

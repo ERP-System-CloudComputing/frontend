@@ -16,12 +16,12 @@
       </nuxt-link>
     </div>
 
-    <v-card class="rounded-2xl shadow-sm mt-6" elevation="0">
+    <v-card class="rounded-2xl shadow-sm mt-6" elevation="0" flat>
       <v-card-title>Budget History</v-card-title>
       <v-data-table
         :headers="headers"
         :items="budgets"
-        class="elevation-1 rounded-lg overflow-hidden"
+        class="elevation-1 rounded-lg overflow-hidden elevation-0"
         hide-default-footer
         item-value="id"
       >

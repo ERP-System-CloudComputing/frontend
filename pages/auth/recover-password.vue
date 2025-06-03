@@ -83,6 +83,7 @@ export default {
           timer: 5000,
           showConfirmButton: false
         })
+        this.$router.push('/')
       } catch (error) {
         Swal.fire({
           icon: 'error',

@@ -50,7 +50,6 @@
           :page.sync="page"
           hide-default-footer
           dense
-          show-select
         >
           <template #[`item.sn`]="{ index }">
             {{ (page - 1) * itemsPerPage + index + 1 }}
@@ -76,9 +75,15 @@
               </div>
             </v-toolbar>
           </template>
-          <template #[`item.action`]>
+          <template #[`item.type`]="{ item }">
+            {{ item.type }}
+            <v-icon>
+              {{ item.type === 'Sent' ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }}
+            </v-icon>
+          </template>
+          <template #[`item.action`]="{ item }">
             <nuxt-link
-              :to="`/circulars/${circulars.id}`"
+              :to="`/circulars/${item.id}`"
               class="hover:underline"
             >
               View more
@@ -99,6 +104,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
+
 export default {
   layout: 'principal',
   data () {
@@ -111,35 +118,44 @@ export default {
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
         { text: 'Circular Title', value: 'title' },
-        { text: 'Sent From', value: 'from' },
-        { text: 'Sent To', value: 'to' },
+        { text: 'Sent From', value: 'sentFrom' },
+        { text: 'Sent To', value: 'sentTo' },
         { text: 'Date', value: 'date' },
         { text: 'Circular Type', value: 'type' },
         { text: 'Action', value: 'action', sortable: false }
       ],
-      circulars: [
-        { sn: '01', title: 'HR Circular for Operations', from: 'Admin, HR', to: 'Ops Staffs', date: '16/11/2022', type: 'Sent' },
-        { sn: '02', title: 'Management Circular', from: 'Admin, HR', to: 'HR Staffs', date: '16/11/2022', type: 'Sent' },
-        { sn: '03', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '04', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '05', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' },
-        { sn: '06', title: 'Maintenance Notice', from: 'Management', to: 'All Staff', date: '16/11/2022', type: 'Received' }
-      ]
+      circulars: []
+    }
+  },
+  mounted () {
+    this.fetchCirculars()
+  },
+  methods: {
+    async fetchCirculars () {
+      try {
+        const response = await this.$axios.get('/circular/getAll')
+        const { data } = response
+
+        this.circulars = [
+          ...data.map(circular => ({
+            ...circular,
+            sn: this.circulars.length + 1, // Assign a serial number
+            date: new Date(circular.date).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit'
+            })
+          }))
+        ]
+
+        console.log(this.circulars)
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error al cargar circulares',
+          text: error.message || 'An error occurred while fetching circulars.'
+        })
+      }
     }
   },
   computed: {

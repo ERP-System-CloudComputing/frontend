@@ -7,7 +7,7 @@
             {{ vouchers.length }}
           </span>
           <span class="flex">
-            Total number of staff
+            Total payment vouchers
           </span>
         </div>
       </v-col>
@@ -23,7 +23,7 @@
           height="57"
           background-color="#F2F7FF"
           :items="filterVouchers"
-          @input="fVoucher"
+          @input="loadVouchers"
         />
       </v-col>
       <v-col cols="12" sm="3" align-self="center" align="center">
@@ -36,25 +36,14 @@
     </v-row>
     <v-row class="mt-7 bg-white rounded-lg">
       <v-col>
-        <v-data-table
-          class="w-full rounded-xl"
-          :headers="headers"
-          :items="vouchers"
-          :items-per-page="itemsPerPage"
-          :page.sync="page"
-          hide-default-footer
-          dense
-        >
-          <template #[`item.sn`]="{ index }">
-            {{ (page - 1) * itemsPerPage + index + 1 }}
-          </template>
-          <template #top>
-            <v-toolbar class="bg-blue rounded-lg" flat>
+        <div>
+          <v-toolbar class="bg-blue rounded-lg" flat>
+            <div class="flex flex-col sm:flex-row">
               <v-toolbar-title class="font-bold">
                 All Payment Vouchers
               </v-toolbar-title>
               <v-spacer />
-              <div class="flex items-center justify-end text-sm space-x-2">
+              <div class="flex items-center sm:justify-end text-sm space-x-2">
                 <span>Showing </span>
                 <div>
                   <v-select
@@ -67,15 +56,20 @@
                 </div>
                 <span> per page</span>
               </div>
-            </v-toolbar>
-          </template>
-          <template #footer>
-            <div class="flex justify-between items-center px-4 py-2 ">
-              <v-pagination
-                v-model="page"
-                :length="pageCount"
-              />
             </div>
+          </v-toolbar>
+        </div>
+        <v-data-table
+          class="w-full rounded-xl h-96 overflow-y-auto overflow-x-hidden"
+          :headers="headers"
+          :items="vouchers"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          hide-default-footer
+          dense
+        >
+          <template #[`item.sn`]="{ index }">
+            {{ (page - 1) * itemsPerPage + index + 1 }}
           </template>
           <template #[`item.actions`]="{ item }">
             <v-menu offset-y>
@@ -106,6 +100,12 @@
             </v-menu>
           </template>
         </v-data-table>
+        <div class="flex justify-between items-center px-4 py-2 ">
+          <v-pagination
+            v-model="page"
+            :length="pageCount"
+          />
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -127,6 +127,8 @@ export default {
       filterVouchers: [
         'All memos'
       ],
+      itemsPerPage: 12,
+      page: 1,
       fVoucher: '',
       vouchers: []
     }
@@ -136,7 +138,18 @@ export default {
       return Math.ceil(this.vouchers.length / this.itemsPerPage)
     }
   },
+  mounted () {
+    this.loadVouchers()
+  },
   methods: {
+    async loadVouchers () {
+      try {
+        const response = await this.$axios.get('/vouchers/getAll')
+        this.vouchers = response.data
+      } catch (error) {
+        // console.log(error)
+      }
+    }
   }
 }
 </script>

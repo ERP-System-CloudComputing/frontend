@@ -11,6 +11,7 @@
           Subject
         </span>
         <v-text-field
+          v-model="voucherData.subject"
           class="rounded-lg"
           placeholder="Enter subject"
           dense
@@ -82,6 +83,7 @@
               Account name
             </span>
             <v-text-field
+              v-model="voucherData.sendTo"
               class="rounded-lg"
               placeholder="Enter name"
               dense
@@ -93,6 +95,7 @@
               Account number
             </span>
             <v-text-field
+              v-model="voucherData.accountNumber"
               class="rounded-lg"
               placeholder="Enter number"
               dense
@@ -104,6 +107,7 @@
               Bank name
             </span>
             <v-text-field
+              v-model="voucherData.bankName"
               class="rounded-lg"
               placeholder="Enter bank name"
               dense
@@ -116,7 +120,7 @@
     <v-row>
       <v-col cols="12" md="3">
         <div>
-          <button class=" text-white w-full sm:mt-4 justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4">
+          <button class=" text-white w-full sm:mt-4 justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="createPaymentVoucher()">
             Submit Payment Voucher
           </button>
         </div>
@@ -137,7 +141,7 @@
               <v-col cols="12" sm="4">
                 <span>Class</span>
                 <v-text-field
-                  v-model="formBuyData.class"
+                  v-model="formBuyData.classbuy"
                   class="rounded-lg"
                   placeholder="Enter class"
                   dense
@@ -294,12 +298,14 @@ export default {
         subject: '',
         date: '',
         preparedBy: '',
-        sendTo: ''
+        sendTo: '',
+        accountNumber: '',
+        bankName: ''
       },
       formBuyDataList: [],
       formBuyData:
         {
-          class: '',
+          classbuy: '',
           description: '',
           qty: '',
           unitPrice: '',
@@ -329,10 +335,18 @@ export default {
     returnAll () {
       this.$router.push('/vouchers')
     },
+    getDate () {
+      const today = new Date()
+      const day = String(today.getDate()).padStart(2, '0')
+      const month = String(today.getMonth() + 1).padStart(2, '0') // Los meses van de 0-11
+      const year = String(today.getFullYear()).slice(-2) // Últimos 2 dígitos
+
+      return `${day}/${month}/${year}`
+    },
     openDialog () {
       this.confirmDialog = true
       this.formBuyData = {
-        class: '',
+        classbuy: '',
         description: '',
         qty: '',
         unitPrice: '',
@@ -352,6 +366,20 @@ export default {
       this.formBuyDataList.push({ ...this.formBuyData })
       //  console.log(this.formBuyDataList)
       this.confirmDialog = false
+    },
+    async createPaymentVoucher () {
+      try {
+        this.voucherData.date = this.getDate()
+        const voucherFull = {
+          voucher: this.voucherData,
+          dataList: this.formBuyDataList
+        }
+        await this.$axios.post('/vouchers/create', voucherFull)
+        alert('Success')
+        this.$router.push('/vouchers')
+      } catch (error) {
+        console.log(error)
+      }
     }
 
   }

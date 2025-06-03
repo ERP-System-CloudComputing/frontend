@@ -31,7 +31,7 @@
             <v-row class=" border-b-2">
               <v-col cols="12" md="2">
                 <div class="border border-gray-300 rounded-xl p-4 hover:bg-gray-100">
-                  <button>
+                  <button @click="openDialog()">
                     <v-icon>
                       mdi-plus
                     </v-icon>
@@ -124,6 +124,135 @@
         </div>
       </v-col>
     </v-row>
+    <v-dialog
+      v-model="confirmDialog"
+      persistent
+      max-width="1200px"
+    >
+      <v-card>
+        <v-card-title>
+          Create Payment Voucher
+        </v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-row>
+              <v-col class="12" sm="4">
+                <span>Class</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter class"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="4">
+                <span>Description</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter description"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="4">
+                <span>QTY</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter QTY"
+                  dense
+                  outlined
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="12" sm="4">
+                <span class="font-bold">Unit Price (N)</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter unit price"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="4">
+                <span class="font-bold">Amount (N)</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter description"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="4">
+                <span class="font-bold">VAT %</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter QTY"
+                  dense
+                  outlined
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="12" sm="4">
+                <span class="font-bold">VAT Amount (N)</span>
+                <v-text-field
+                  class="rounded-lg"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="4">
+                <span class="font-bold">Gross Amount (N)</span>
+                <v-text-field
+                  class="rounded-lg"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="4">
+                <span class="font-bold">WHT %</span>
+                <v-text-field
+                  class="rounded-lg"
+                  placeholder="Enter WHT"
+                  dense
+                  outlined
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="12" sm="6">
+                <span class="font-bold">WHT Amount (N)</span>
+                <v-text-field
+                  class="rounded-lg"
+                  dense
+                  outlined
+                />
+              </v-col>
+              <v-col class="12" sm="6">
+                <span class="font-bold">Net Amount (N)</span>
+                <v-text-field
+                  class="rounded-lg"
+                  dense
+                  outlined
+                />
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <div>
+            <button>
+              ADD
+            </button>
+            <button>
+              Cancel
+            </button>
+          </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -145,7 +274,13 @@ export default {
         { text: 'WHT (%)', value: 'wht' },
         { text: 'WHT Amount', value: 'whtAmount' },
         { text: 'Net Amount', value: 'netAmount' }
-      ]
+      ],
+      confirmDialog: false
+    }
+  },
+  methods: {
+    openDialog () {
+      this.confirmDialog = true
     }
   }
 

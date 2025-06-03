@@ -147,6 +147,11 @@ export default {
           icon: 'mdi-cash-multiple',
           title: 'Add Staff',
           subtitle: 'Generate and send payroll to account.'
+        },
+        'payroll-create': {
+          icon: 'mdi-cash-multiple',
+          title: 'Add Staff',
+          subtitle: 'Generate and send payroll to account.'
         }
       }
 
@@ -180,16 +185,15 @@ export default {
         localStorage.removeItem('auth._token.local')
         localStorage.removeItem('auth._token_expiration.local')
         localStorage.clear()
-        sessionStorage.clear()
 
         // * 4. Rediridimos al user a login:
         await this.$router.push('/')
       } catch (error) {
+        const message = 'Something went wrong!' || error.message.data
         swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Something went wrong!',
-          footer: '<a href>Why do I have this issue?</a>'
+          text: message
         })
         // console.error('Error al cerrar sesión: ', error)
         // console.error('Error completo: ', error.response)

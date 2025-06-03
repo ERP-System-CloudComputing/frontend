@@ -28,7 +28,7 @@
       </v-col>
       <v-col cols="12" sm="3" align-self="center" align="center">
         <div class="w-full">
-          <button class=" text-white w-full sm:w-auto sm:mt-4 flex justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="$router.push('vouchers/add')">
+          <button class=" text-white w-full sm:w-auto sm:mt-4 flex justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="createVoucher()">
             Create Payment Voucher
           </button>
         </div>
@@ -195,6 +195,7 @@ export default {
         'All memos'
       ],
       formBuyData: [],
+      confirmDialog: false,
       itemsPerPage: 12,
       page: 1,
       fVoucher: '',
@@ -212,6 +213,9 @@ export default {
     this.loadVouchers()
   },
   methods: {
+    createVoucher () {
+      this.$router.push('vouchers/add')
+    },
     async loadVouchers () {
       try {
         const response = await this.$axios.get('/vouchers/getAll')
@@ -232,6 +236,8 @@ export default {
     async deleteVoucher () {
       try {
         await this.$axios.delete(`/vouchers/delete/${this.selectVoucher.id}`)
+        this.closeDialog()
+        this.loadVouchers()
       } catch (error) {
         console.log(error)
       }

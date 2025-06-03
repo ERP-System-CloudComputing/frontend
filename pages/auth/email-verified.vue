@@ -1,6 +1,6 @@
 <template>
   <div class="flex box-border min-h-screen">
-    <div class="flex flex-col w-1/2 p-16">
+    <div class="flex flex-col md:w-1/2 p-16">
       <div class="flex justify-between items-center">
         <div>
           <a href="/">
@@ -61,8 +61,8 @@
       </form>
     </div>
 
-    <div class="w-1/2 relative">
-      <img src="../../static/recover-password.png" alt="Logo Image" class="absolute inset-0 w-full h-full object-cover">
+    <div class="hidedn md:block md:w-1/2 relative">
+      <img src="../../static/email-verified.png" alt="Logo Image" class="absolute inset-0 w-full h-full object-cover">
     </div>
   </div>
 </template>

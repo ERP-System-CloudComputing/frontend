@@ -6,8 +6,10 @@
       <input
         type="button"
         value="Create Salary Definition"
-        class="w-52 py-3 text-xs text-white bg-gradient-to-r from-primario to-secundario rounded-lg
+        class="w-52 py-3 text-xs bg-gradient-to-r from-primario to-secundario rounded-lg
                  hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out cursor-pointer"
+        style="color: white !important"
+        @click="navegateToCreate"
       >
     </v-card-title>
     <v-data-table
@@ -54,6 +56,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'PayrollTable',
   data () {
@@ -106,6 +109,10 @@ export default {
     }
   },
   methods: {
+    navegateToCreate () {
+      // this.$router.push({ name: 'PayrollCreate' })
+      this.$router.push({ path: '/payroll/create' })
+    },
     formatCurrency (value) {
       return value ? `$${value.toLocaleString()}` : ''
     },

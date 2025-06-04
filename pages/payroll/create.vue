@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import PayrollCreate from '@/components/payroll/payrollCreate.vue'
+import PayrollCreate from '~/components/payroll/subComponets/payrollCreate.vue'
 
 export default {
   components: {

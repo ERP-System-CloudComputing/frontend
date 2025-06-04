@@ -160,6 +160,11 @@ export default {
           icon: 'mdi-cogs',
           title: 'Maintenance',
           subtitle: 'View and create schedule for maintenance.'
+        },
+        'maintenance-add': {
+          icon: 'mdi-cogs',
+          title: 'Maintenance',
+          subtitle: 'View and create schedule for maintenance.'
         }
       }
 

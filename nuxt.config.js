@@ -24,7 +24,8 @@ export default {
   plugins: [
     '~/plugins/fortawesome.js',
     '~/plugins/vxe-table.js',
-    '~/plugins/tokensExpired.js'
+    '~/plugins/tokensExpired.js',
+    { src: '~/plugins/v-calendar.js', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

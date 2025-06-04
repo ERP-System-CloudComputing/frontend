@@ -155,6 +155,11 @@ export default {
           icon: 'mdi-receipt-text',
           title: 'Create Circulars',
           subtitle: 'Create and send circulars to designated offices.'
+        },
+        maintenance: {
+          icon: 'mdi-cogs',
+          title: 'Maintenance',
+          subtitle: 'View and create schedule for maintenance.'
         }
       }
 

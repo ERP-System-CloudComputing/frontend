@@ -131,6 +131,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="viewMoreDialog = false">Cerrar</v-btn>
+          <v-btn color="primary" text @click="goToUpdate">Actualizar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -219,6 +220,9 @@ export default {
     openModal (circular) {
       this.selectedCircular = { ...circular }
       this.viewMoreDialog = true
+    },
+    goToUpdate () {
+      this.$router.push(`/circulars/update/${this.selectedCircular.id}`)
     }
   },
   computed: {

@@ -8,7 +8,7 @@
       </h3>
 
       <nuxt-link
-        to="/budget/create"
+        to="/logistics/create"
         class="px-16 py-3 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
                 hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white"
       >

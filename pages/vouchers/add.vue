@@ -4,12 +4,20 @@
       <v-col>
         <v-form ref="formVou" v-model="formValidar">
           <v-row>
-            <v-col cols="12">
-              <h1 class="font-bold text-lg">
+            <v-col cols="12" class="flex justify-between sm:flex-row flex-col">
+              <span class="font-bold text-lg">
                 Payment Voucher
-              </h1>
+              </span>
+              <div>
+                <button class="flex pb-4" @click="returnAll">
+                  <v-icon class="bg-gradient-to-b from-primario to-secundario bg-clip-text text-transparent">
+                    mdi-arrow-left
+                  </v-icon>
+                  <span class="text-lg bg-gradient-to-r from-primario to-secundario bg-clip-text text-transparent">Back</span>
+                </button>
+              </div>
             </v-col>
-            <v-col cols="12" md="3" class="sm:space-y-3">
+            <v-col cols="12" md="3">
               <span class="text-gray-600">
                 Subject
               </span>
@@ -24,7 +32,7 @@
             </v-col>
             <v-col cols="12">
               <v-data-table
-                class="w-full rounded-xl max-h-40 overflow-y-auto overflow-x-hidden"
+                class="w-full rounded-xl h-40 overflow-y-auto overflow-x-hidden"
                 :headers="headers"
                 :items="formBuyDataList"
                 hide-default-footer

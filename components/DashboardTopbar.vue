@@ -157,6 +157,16 @@ export default {
           icon: 'mdi-cash-multiple',
           title: 'Add Staff',
           subtitle: 'Generate and send payroll to account.'
+        },
+        'payroll-create-payslip': {
+          icon: 'mdi-cash-multiple',
+          title: 'Add Staff',
+          subtitle: 'Generate and send payroll to account.'
+        },
+        'payroll-resume-payslip': {
+          icon: 'mdi-cash-multiple',
+          title: 'Add Staff',
+          subtitle: 'Generate and send payroll to account.'
         }
       }
 

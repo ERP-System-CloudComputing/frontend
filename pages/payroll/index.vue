@@ -1,18 +1,18 @@
 <template>
   <div>
     <PayrollCards />
-    <PayrollTable />
+    <!-- <PayrollTable /> -->
   </div>
 </template>
 
 <script>
-import PayrollTable from '~/components/payroll/payrollTable.vue'
-import PayrollCards from '~/components/payroll/payrollCards.vue'
+// import PayrollTable from '~/components/payroll/SSalaryBreakdown.vue'
+import PayrollCards from '~/components/payroll/payrollIndex.vue'
 export default {
   name: 'PayrollIndex',
   components: {
-    PayrollCards,
-    PayrollTable
+    PayrollCards
+    // PayrollTable
   },
   layout: 'principal'
 }

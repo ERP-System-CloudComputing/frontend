@@ -1,7 +1,7 @@
 <template>
   <v-container class="space-y-7">
     <v-row>
-      <DashboardCardsVue />
+      <MaintenanceCards :count-status-type="countStatusType" />
     </v-row>
     <v-row class="bg-white rounded-lg">
       <v-col cols="12" class="flex sm:flex-row flex-col sm:justify-between items-center">
@@ -122,10 +122,10 @@
 
 <script>
 import dayjs from 'dayjs'
-import DashboardCardsVue from '~/components/dashboard/DashboardCards.vue'
+import MaintenanceCards from '~/components/maintenance/MaintenanceCards.vue'
 export default {
   components: {
-    DashboardCardsVue
+    MaintenanceCards
   },
   layout: 'principal',
   data () {
@@ -139,14 +139,24 @@ export default {
       ],
       formValidar: false,
       allMaintenances: [],
+      all: [],
       confirmDialog: false,
-      selectedCita: null
+      selectedCita: null,
+      countStatusType: {
+        Scheduled: 0,
+        Completed: 0,
+        Pending: 0,
+        Overdue: 0
+      }
     }
   },
   watch: {
     selectedDate () {
       this.getMaintenancesByDate()
     }
+  },
+  mounted () {
+    this.getAllMaintenances()
   },
   methods: {
     goToAdd () {
@@ -172,6 +182,14 @@ export default {
     closeDialog () {
       this.confirmDialog = false
       this.formValidar = false
+      this.getAllMaintenances()
+    },
+    getStatus (maintenance) {
+      return maintenance.reduce((act, item) => {
+        const status = item.status
+        act[status] = (act[status] || 0) + 1
+        return act
+      }, {})
     },
     validForm () {
       if (this.$refs.form.validate()) {
@@ -198,9 +216,22 @@ export default {
         console.log(error)
       }
     },
+    async getAllMaintenances () {
+      try {
+        const response = await this.$axios.get('/maintenance/getAll')
+        this.all = response.data
+          ? response.data.map(item => ({
+            ...item
+          }))
+          : []
+        this.countStatusType = this.getStatus(this.all)
+      } catch (error) {
+        console.log(error)
+      }
+    },
     async updateStatus () {
       try {
-        await this.$axios.put(`/maintenance/update/${this.selectedCita.id}`, this.selectedCita.status)
+        await this.$axios.put(`/maintenance/update/${this.selectedCita.id}`, this.selectedCita)
         alert('Success')
         this.$router.push('/maintenance')
         this.closeDialog()

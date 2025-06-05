@@ -25,6 +25,7 @@ export default {
     '~/plugins/fortawesome.js',
     '~/plugins/vxe-table.js',
     '~/plugins/tokensExpired.js',
+    '~/plugins/days.js',
     { src: '~/plugins/v-calendar.js', mode: 'client' }
   ],
 

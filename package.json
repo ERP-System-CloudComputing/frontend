@@ -21,6 +21,7 @@
     "@nuxtjs/vuetify": "^1.12.3",
     "chart.js": "^3.8.0",
     "core-js": "^3.25.3",
+    "dayjs": "^1.11.13",
     "nuxt": "^2.15.8",
     "sweetalert2": "^11.21.0",
     "v-calendar": "^2.4.2",

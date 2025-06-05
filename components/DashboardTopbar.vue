@@ -167,6 +167,11 @@ export default {
           icon: 'mdi-cash-multiple',
           title: 'Add Staff',
           subtitle: 'Generate and send payroll to account.'
+        },
+        'payroll-create-payroll': {
+          icon: 'mdi-cash-multiple',
+          title: 'Add Staff',
+          subtitle: 'Generate and send payroll to account.'
         }
       }
 

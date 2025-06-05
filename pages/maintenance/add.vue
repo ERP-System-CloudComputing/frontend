@@ -125,11 +125,7 @@ export default {
         'Damaged',
         'Dangerous'
       ],
-      selectItem: '',
-      selectNumber: 1,
       selectDate: '',
-      selectMaintenance: '',
-      selectRecurring: '',
       formData: {
         itemName: '',
         number: '',
@@ -146,7 +142,7 @@ export default {
     newFormat (date) {
       if (!date) { return '' }
       const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
+      return `${day}-${month}-${year}`
     },
     required (campo, min) {
       return (v) => {
@@ -158,7 +154,6 @@ export default {
     validForm () {
       if (this.$refs.form.validate()) {
         this.formData.date = this.newFormat(this.selectDate)
-        console.log(this.formData)
         this.createMaintenance()
       } else {
         alert('Complete all fields')
@@ -166,7 +161,6 @@ export default {
     },
     async createMaintenance () {
       try {
-        console.log(this.formData)
         await this.$axios.post('/maintenance/create', this.formData)
         alert('Success')
         this.$router.push('/maintenance')

@@ -22,12 +22,15 @@
         </span>
       </v-col>
       <v-col cols="12" sm="6" class="flex justify-center">
-        <div class="lg:flex lg:w-full px-28">
+        <div class="flex justify-center">
           <vc-date-picker
-            class="lg:flex"
+            v-model="selectedDate"
+            class="flex"
+            color="blue"
           />
         </div>
       </v-col>
+
       <v-col cols="12" sm="6">
         asdasda
       </v-col>
@@ -44,16 +47,39 @@ export default {
   layout: 'principal',
   data () {
     return {
+      selectedDate: new Date(),
+      allMaintenances: []
 
+    }
+  },
+  watch: {
+    selectedDate () {
+      this.getMaintenancesByDate()
     }
   },
   methods: {
     goToAdd () {
       this.$router.push('/maintenance/add')
+    },
+    NewDate (date) {
+      if (!(date instanceof Date)) { return '' }
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${day}-${month}-${year}`
+    },
+    async getMaintenancesByDate () {
+      try {
+        const date = this.NewDate(this.selectedDate)
+        const response = await this.$axios.get(`/maintenance/getByDate/${date}`)
+        this.allMaintenances = response.data ? [response.data] : []
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 </style>

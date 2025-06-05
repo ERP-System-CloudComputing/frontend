@@ -24,29 +24,35 @@
 
 <script>
 export default {
+  props: {
+    infoLogistics: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data () {
     return {
       cards: [
         {
-          value: '350',
+          value: this.infoLogistics.total,
           label: 'Total request made',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: '5,000,000',
+          value: this.infoLogistics.costTotal.replace('MX', ''),
           label: 'Total cost incurred',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: '70',
+          value: this.infoLogistics.pending,
           label: 'Pending request',
           iconBg: 'bg-yellow-100',
           iconColor: 'orange'
         },
         {
-          value: '280',
+          value: this.infoLogistics.approved,
           label: 'Approved request',
           iconBg: 'bg-green-100',
           iconColor: 'green'

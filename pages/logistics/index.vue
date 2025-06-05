@@ -1,6 +1,6 @@
 <template>
   <div class="my-5">
-    <LogisticsCardsVue />
+    <LogisticsCardsVue v-if="infoLogistics.total" :info-logistics="infoLogistics" />
 
     <div class="flex justify-between items-center flex-col sm:flex-row mt-6 bg-white py-9 px-5 rounded-2xl shadow-sm">
       <h3 class="text-xl font-semibold">
@@ -70,8 +70,18 @@ export default {
         { text: 'Status', value: 'status', sortable: true, align: 'center' },
         { text: 'Action', value: 'action', sortable: false, align: 'center' }
       ],
-      logisticsRequests: []
+      logisticsRequests: [],
+      infoLogistics: {
+        total: 0,
+        costTotal: 0,
+        approved: 0,
+        pending: 0
+      }
     }
+  },
+  async mounted () {
+    await this.fetchLogisticsRequests()
+    await this.getInfoLogistics()
   },
   methods: {
     formatCurrency (amount) {
@@ -113,10 +123,36 @@ export default {
           confirmButtonText: 'OK'
         })
       }
+    },
+    async getInfoLogistics () {
+      try {
+        const response = await this.$axios.get('/logistics/info')
+        if (response.status === 200) {
+          console.log('Información de logistics obtenida:', response.data)
+          this.infoLogistics = {
+            total: response.data.totalLogistics,
+            costTotal: this.formatCurrency(response.data.totalCost),
+            approved: response.data.approvedLogistics,
+            pending: response.data.pendingLogistics
+          }
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo obtener la información de logistics.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          })
+        }
+      } catch (error) {
+        console.error('Error al obtener la información de logistics:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Error al obtener la información de logistics.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+      }
     }
-  },
-  mounted () {
-    this.fetchLogisticsRequests()
   }
 }
 </script>

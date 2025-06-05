@@ -50,12 +50,49 @@
 
         <div v-if="logistics.attachment" class="mt-6">
           <iframe
-            :src="`${api_url}${logistics.attachment.filePath}`"
+            :src="`${api_url}/files/pdf/${logistics.attachment.fileName}`"
             type="application/pdf"
             width="100%"
             height="700px"
             class="rounded border"
           ></iframe>
+        </div>
+
+        <div class="mt-10">
+          <v-form ref="formSubmit" v-model="isFormSubmit">
+            <v-row class="items-center">
+              <v-col cols="12" md="4">
+                <label class="text-sm font-normal text-black">Action</label>
+                <v-select
+                  v-model="dataSubmit.action"
+                  :items="actions"
+                  placeholder="Select action"
+                  outlined
+                  dense
+                  :rules="[rules.required]"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <label class="text-sm font-normal text-black">Remarks</label>
+                <v-text-field
+                  v-model="logistics.remarks"
+                  placeholder="Enter remarks"
+                  outlined
+                  dense
+                  :rules="[rules.required]"
+                />
+              </v-col>
+              <v-col cols="12" md="4">
+                <v-btn
+                  color="primary"
+                  class="w-full"
+                  @click="submitAction"
+                >
+                  Submit
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
         </div>
       </v-card-text>
     </v-card>
@@ -63,7 +100,7 @@
 </template>
 
 <script>
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 
 export default {
   layout: 'principal',
@@ -71,7 +108,20 @@ export default {
     return {
       api_url: process.env.APP_URL || 'http://localhost:5000/api',
       idLogistics: null,
-      logistics: {}
+      logistics: {},
+      actions: [
+        { text: 'Approve', value: 'APPROVE' },
+        { text: 'Reject', value: 'REJECT' },
+        { text: 'Pending', value: 'PENDING' }
+      ],
+      rules: {
+        required: value => !!value || 'This field is required'
+      },
+      dataSubmit: {
+        action: '',
+        remarks: ''
+      },
+      isFormSubmit: false
     }
   },
   async mounted () {
@@ -98,6 +148,34 @@ export default {
         }
       } catch (error) {
         this.$router.push('/logistics')
+      }
+    },
+    async submitAction () {
+      if (this.$refs.formSubmit.validate()) {
+        try {
+          const response = await this.$axios.post(`/logistics/action/${this.idLogistics}`, this.dataSubmit)
+          if (response.status === 200) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Exito',
+              text: 'Acción actualizada correctamente.'
+            }).then(() => {
+              this.$router.push('/logistics')
+            })
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ha ocurrido un error al enviar la acción.'
+            })
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ha ocurrido un error al enviar la acción.'
+          })
+        }
       }
     }
   }

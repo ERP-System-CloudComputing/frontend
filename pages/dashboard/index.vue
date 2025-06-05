@@ -35,6 +35,7 @@ export default {
     DashboardDoughnutVue
   },
   layout: 'principal',
+  middleware: 'auth',
   data () {
     return {
       memoData: {}

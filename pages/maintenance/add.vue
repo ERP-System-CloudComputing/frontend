@@ -131,7 +131,8 @@ export default {
         number: '',
         date: '',
         maintenanceType: '',
-        recurring: ''
+        recurring: '',
+        status: ''
       }
     }
   },

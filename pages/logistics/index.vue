@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 import LogisticsCardsVue from '~/components/logistics/LogisticsCards.vue'
 
 export default {
@@ -65,22 +66,11 @@ export default {
         { text: 'Amount', value: 'amount', sortable: true, align: 'end' }, // Alineado a la derecha para montos
         { text: 'Requested By', value: 'requestedBy', sortable: true },
         { text: 'Sent to', value: 'sentTo', sortable: true },
-        { text: 'Date', value: 'date', sortable: true },
+        { text: 'Date', value: 'dateFrom', sortable: true },
         { text: 'Status', value: 'status', sortable: true, align: 'center' },
         { text: 'Action', value: 'action', sortable: false, align: 'center' }
       ],
-      logisticsRequests: [ // Renombrado de 'budgets' y datos actualizados
-        { id: 'lr001', sn: '01', title: 'Request for travel time', purpose: 'Training ourse', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Pending' },
-        { id: 'lr002', sn: '02', title: 'Request for travel time', purpose: 'Vacation', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Pending' },
-        { id: 'lr003', sn: '03', title: 'Request for travel time', purpose: 'Training ourse', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr004', sn: '04', title: 'Request for travel time', purpose: 'Vacation', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr005', sn: '05', title: 'Request for travel time', purpose: 'Vacation', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr006', sn: '06', title: 'Request for travel time', purpose: 'Training ourse', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr007', sn: '07', title: 'Request for travel time', purpose: 'Training ourse', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr008', sn: '08', title: 'Request for travel time', purpose: 'Training ourse', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr009', sn: '09', title: 'Request for travel time', purpose: 'Vacation', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' },
-        { id: 'lr010', sn: '10', title: 'Request for travel time', purpose: 'Training ourse', amount: 360000.00, requestedBy: 'Otor John Stephen', sentTo: 'Hassana Husseini', date: '21/11/2022', status: 'Approved' }
-      ]
+      logisticsRequests: []
     }
   },
   methods: {
@@ -88,11 +78,11 @@ export default {
       return amount.toLocaleString('en-NG', { style: 'currency', currency: 'MXN' })
     },
     getStatusColor (status) {
-      if (status === 'Approved') {
+      if (status === 'APPROVED') {
         return 'green darken-1'
-      } else if (status === 'Pending') {
+      } else if (status === 'PENDING') {
         return 'orange darken-1'
-      } else if (status === 'Rejected') {
+      } else if (status === 'REJECTED') {
         return 'red darken-1'
       } else {
         return 'grey'
@@ -101,7 +91,32 @@ export default {
     viewDetails (item) {
       // Lógica para ver detalles, por ejemplo, navegar a otra página o abrir un modal
       this.$router.push(`/logistics/request/${item.id}`)
+    },
+    async fetchLogisticsRequests () {
+      try {
+        const response = await this.$axios.get('/logistics/getAll')
+        this.logisticsRequests = response.data.map((item, index) => ({
+          ...item,
+          sn: index + 1, // Agrega el número de serie
+          dateFrom: new Date(item.dateFrom).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          })
+        }))
+      } catch (error) {
+        console.error('Error fetching logistics requests:', error)
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to fetch logistics requests.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        })
+      }
     }
+  },
+  mounted () {
+    this.fetchLogisticsRequests()
   }
 }
 </script>

@@ -43,6 +43,7 @@
             <v-col cols="12" md="4">
               <label class="text-sm font-normal text-black">Sent to</label>
               <v-select
+                v-model="logisticsRequest.sentTo"
                 :items="users"
                 placeholder="Select office"
                 outlined
@@ -150,7 +151,7 @@
                 placeholder="Enter number"
                 outlined
                 dense
-                :rules="[rules.required]"
+                :rules="[rules.clabe]"
               />
             </v-col>
             <v-col cols="12" md="4">
@@ -224,11 +225,17 @@ export default {
       rules: {
         required: value => !!value || 'El campo es obligatorio',
         positiveAmount: value => (value && parseFloat(value) > 0) || 'El monto debe ser positivo',
-        clabe: value => {
-          if (!value) return 'La CLABE es obligatoria.'; // Opcional, si ya usas 'required'
-          if (!/^\d+$/.test(value)) return 'La CLABE debe contener solo números.';
-          if (value.length !== 18) return 'La CLABE debe tener 18 dígitos.';
-          return true;
+        clabe: (value) => {
+          if (!value) {
+            return 'La CLABE es obligatoria.'
+          }
+          if (!/^\d+$/.test(value)) {
+            return 'La CLABE debe contener solo números.'
+          }
+          if (value.length !== 18) {
+            return 'La CLABE debe tener 18 dígitos.'
+          }
+          return true
         }
       },
       logisticsRequest: {
@@ -364,7 +371,7 @@ export default {
         console.warn('No se seleccionó ningún archivo')
       }
     },
-    handleSubmit () {
+    async handleSubmit () {
       const verifierSignatureData = this.$refs.verifierPad.saveSignature()
       const authorizerSignatureData = this.$refs.authorizerPad.saveSignature()
 
@@ -380,7 +387,72 @@ export default {
         // Aquí puedes manejar el envío del formulario, por ejemplo, enviarlo a un servidor
         this.beneficiaryPaymentDetails.verifierSignatureData = verifierSignatureData.data
         this.beneficiaryPaymentDetails.authorizerSignatureData = authorizerSignatureData.data
-        
+        this.beneficiaryPaymentDetails.accountNumber = parseFloat(this.beneficiaryPaymentDetails.accountNumber.replace(/,/g, '')) // Elimina comas si las hay
+
+        try {
+          const responseBeneficiary = await this.$axios.post('/beneficiary/create', this.beneficiaryPaymentDetails)
+
+          if (responseBeneficiary.status === 201) {
+            // Mostrar mensaje de exito e indicarle al usuario que espere para cargar todos los logistics
+            Swal.fire({
+              title: 'Éxito',
+              text: 'Detalles de pago del beneficiario guardados correctamente.',
+              icon: 'success'
+            })
+
+            // Mostrar mensaje de carga
+            Swal.fire({
+              title: 'Cargando',
+              text: 'Por favor, espere mientras se cargan los detalles de logística.',
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading()
+              }
+            })
+
+            const logisticsFailed = []
+
+            await this.logisticsRequests.forEach(async (request) => {
+              const response = await this.$axios.post('/logistics/create', { ...request })
+
+              if (response.status !== 201) {
+                logisticsFailed.push(request)
+              }
+            })
+
+            if (logisticsFailed.length > 0) {
+              Swal.close()
+              Swal.fire({
+                title: 'Algunos detalles de logística no se pudieron guardar',
+                text: 'Por favor, inténtelo de nuevo más tarde.',
+                icon: 'warning'
+              })
+            } else {
+              Swal.close() // Cierra el mensaje de carga
+              // Mostrar mensaje de éxito y redirigir a la página de logística
+              Swal.fire({
+                title: 'Éxito',
+                text: 'Detalles de logística guardados correctamente.',
+                icon: 'success'
+              }).then(() => {
+                this.$router.push('/logistics')
+              })
+            }
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: 'No se pudieron guardar los detalles de pago del beneficiario. Por favor, inténtelo de nuevo más tarde.',
+              icon: 'error'
+            })
+          }
+        } catch (error) {
+          console.error('Error al enviar la solicitud:', error)
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo enviar la solicitud. Por favor, inténtelo de nuevo más tarde.',
+            icon: 'error'
+          })
+        }
       }
     }
   }

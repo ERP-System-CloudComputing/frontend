@@ -151,6 +151,11 @@ export default {
           title: 'Logistics',
           subtitle: 'Make and send logistics request.'
         },
+        'logistics-id': {
+          icon: 'mdi-truck',
+          title: 'Logistics Details',
+          subtitle: 'View details of logistic request.'
+        },
         'logistics-create': {
           icon: 'mdi-truck',
           title: 'Logistics Request',

@@ -36,7 +36,7 @@
           </template>
           <template #[`item.action`]="{ item }">
             <nuxt-link
-              :to="`/logistics/request/${item.id}`"
+              :to="`/logistics/${item.id}`"
               class="text-primario hover:underline font-medium"
             >
               View more
@@ -100,7 +100,7 @@ export default {
     },
     viewDetails (item) {
       // Lógica para ver detalles, por ejemplo, navegar a otra página o abrir un modal
-      this.$router.push(`/logistics/request/${item.id}`)
+      this.$router.push(`/logistics/${item.id}`)
     },
     async fetchLogisticsRequests () {
       try {
@@ -128,7 +128,6 @@ export default {
       try {
         const response = await this.$axios.get('/logistics/info')
         if (response.status === 200) {
-          console.log('Información de logistics obtenida:', response.data)
           this.infoLogistics = {
             total: response.data.totalLogistics,
             costTotal: this.formatCurrency(response.data.totalCost),

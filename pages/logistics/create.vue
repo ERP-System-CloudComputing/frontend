@@ -106,21 +106,21 @@
           <template #[`item.dateTo`]="{ item }">
             {{ new Date(item.dateTo).toLocaleDateString('en-US') }}
           </template>
-          <template #[`item.attachment`]="{ item }">
+          <template #[`item.attachment`]="{ item, index }">
             <input
               type="file"
-              :id="`file-input-${item.id}`"
+              :id="`file-input-${index}`"
               accept=".pdf"
               style="display: none"
               @change="e => handleFileUpload(e, item)"
             />
             <button
-              @click="triggerRowFileInput(item.id)"
+              @click="triggerRowFileInput(index)"
             >
               <v-icon left color="#1976d2">
                 mdi-paperclip
               </v-icon>
-              {{ item.attachment || 'No attachment' }}
+              {{ item.attachment.fileName || 'No attachment' }}
             </button>
           </template>
         </v-data-table>
@@ -131,20 +131,40 @@
       <v-card-title>Beneficiary Payment Details</v-card-title>
       <v-spacer />
       <v-card-text>
-        <v-row>
-          <v-col cols="12" md="4">
-            <label class="text-sm font-normal text-black">Account name</label>
-            <v-text-field placeholder="Enter name" outlined dense :rules="[rules.required]" />
-          </v-col>
-          <v-col cols="12" md="4">
-            <label class="text-sm font-normal text-black">Account number</label>
-            <v-text-field placeholder="Enter number" outlined dense :rules="[rules.required]" />
-          </v-col>
-          <v-col cols="12" md="4">
-            <label class="text-sm font-normal text-black">Bank name</label>
-            <v-text-field placeholder="Enter bank name" outlined dense :rules="[rules.required]" />
-          </v-col>
-        </v-row>
+        <v-form ref="formBeneficiary" v-model="isFormBeneficiaryValid">
+          <v-row>
+            <v-col cols="12" md="4">
+              <label class="text-sm font-normal text-black">Account name</label>
+              <v-text-field
+                v-model="beneficiaryPaymentDetails.accountName"
+                placeholder="Enter name"
+                outlined
+                dense
+                :rules="[rules.required]"
+              />
+            </v-col>
+            <v-col cols="12" md="4">
+              <label class="text-sm font-normal text-black">Account number</label>
+              <v-text-field
+                v-model="beneficiaryPaymentDetails.accountNumber"
+                placeholder="Enter number"
+                outlined
+                dense
+                :rules="[rules.required]"
+              />
+            </v-col>
+            <v-col cols="12" md="4">
+              <label class="text-sm font-normal text-black">Bank name</label>
+              <v-text-field
+                v-model="beneficiaryPaymentDetails.bankName"
+                placeholder="Enter bank name"
+                outlined
+                dense
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+        </v-form>
 
         <v-row>
           <v-col cols="12" md="4">
@@ -157,7 +177,7 @@
           </v-col>
           <v-col cols="12" md="4">
             <vue-signature-pad
-              ref="verifierPad"
+              ref="authorizerPad"
               :options="signatureOptions"
               style="border: 1px solid #ccc; height: 100px; border-bottom: 1px solid black; margin-bottom: 1rem;"
             />
@@ -171,12 +191,15 @@
           color="primary"
           class="w-full max-w-xs px-8 py-3 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
                 hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white"
+          :disabled="logisticsRequests.length === 0"
+          @click="handleSubmit"
         >
           Save and Send for Approval
         </v-btn>
         <!-- Boton con el texto azul, bg blanco y borde azul y redondeado -->
         <button
           class="h-9 p-px bg-gradient-to-r from-primario to-secundario rounded-lg hover:opacity-90 duration-500 transform hover:scale-110 ease-in-out hover:shadow-lg"
+          :disabled="logisticsRequests.length === 0"
         >
           <div class="bg-white rounded-lg h-full w-full flex items-center justify-center text-blue-500 px-9 py-3">
             Save
@@ -188,7 +211,7 @@
 </template>
 
 <script>
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 import { VueSignaturePad } from 'vue-signature-pad'
 
 export default {
@@ -212,7 +235,15 @@ export default {
         dateTo: null,
         attachment: ''
       },
-      isFormValid: false,
+      beneficiaryPaymentDetails: {
+        accountName: '',
+        accountNumber: '',
+        bankName: '',
+        verifierSignatureData: '',
+        authorizerSignatureData: ''
+      },
+      isFormLogisticsValid: false,
+      isFormBeneficiaryValid: false,
       users: [
         'John Doe',
         'Jane Smith',
@@ -250,6 +281,8 @@ export default {
       } else {
         console.log('Formulario no válido')
       }
+
+      console.log(this.logisticsRequests)
     },
     resetForm () {
       this.logisticsRequest = {
@@ -287,7 +320,7 @@ export default {
         fileInput.click()
       } else {
         console.error(`No se encontró el input de archivo para el item con ID: ${itemId}`)
-        // Swal.fire('Error', `No se encontró el control de subida para este item.`, 'error');
+        Swal.fire('Error', 'No se encontró el control de subida para este item.', 'error')
       }
     },
     async handleFileUpload (event, item) {
@@ -298,11 +331,53 @@ export default {
           return
         }
 
-        // Simulación de subida exitosa
-        item.attachment = file.name
-        console.log(`Archivo subido: ${file.name} para el item con ID: ${item.id}`)
+        if (file.size > 5 * 1024 * 1024) { // 5 MB
+          console.warn('El archivo es demasiado grande. El tamaño máximo permitido es de 5 MB.')
+          return
+        }
+
+        // Aquí puedes manejar la subida del archivo, por ejemplo, enviarlo a un servidor
+        const formData = new FormData()
+        formData.append('file', file)
+
+        try {
+          const response = await this.$axios.post('/files/upload-pdf', formData)
+
+          if (response.status === 200) {
+            item.attachment = response.data
+            Swal.fire('Éxito', 'Archivo subido correctamente.', 'success')
+          } else {
+            console.warn('Error al subir el archivo:', response.data)
+            Swal.fire('Error', 'No se pudo subir el archivo. Por favor, inténtelo de nuevo más tarde.', 'error')
+          }
+        } catch (error) {
+          console.error('Error al subir el archivo:', error)
+          Swal.fire('Error', 'No se pudo subir el archivo. Por favor, inténtelo de nuevo más tarde.', 'error')
+        }
       } else {
         console.warn('No se seleccionó ningún archivo')
+      }
+    },
+    handleSubmit () {
+      this.beneficiaryPaymentDetails.verifierSignatureData = this.$refs.verifierPad.saveSignature()
+      this.beneficiaryPaymentDetails.authorizerSignatureData = this.$refs.authorizerPad.saveSignature()
+
+      if (this.$refs.formBeneficiary.validate()) {
+        if (this.beneficiaryPaymentDetails.verifierSignatureData.isEmpty || this.beneficiaryPaymentDetails.authorizerSignatureData.isEmpty) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Por favor, firme los campos de verificador y autorizador.',
+            icon: 'error'
+          })
+          return
+        }
+        // Aquí puedes manejar el envío del formulario, por ejemplo, enviarlo a un servidor
+        Swal.fire({
+          title: 'Éxito',
+          text: 'Solicitud de logística enviada para aprobación.',
+          icon: 'success'
+        })
+        this.resetForm()
       }
     }
   }

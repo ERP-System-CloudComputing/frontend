@@ -223,7 +223,13 @@ export default {
     return {
       rules: {
         required: value => !!value || 'El campo es obligatorio',
-        positiveAmount: value => (value && parseFloat(value) > 0) || 'El monto debe ser positivo'
+        positiveAmount: value => (value && parseFloat(value) > 0) || 'El monto debe ser positivo',
+        clabe: value => {
+          if (!value) return 'La CLABE es obligatoria.'; // Opcional, si ya usas 'required'
+          if (!/^\d+$/.test(value)) return 'La CLABE debe contener solo números.';
+          if (value.length !== 18) return 'La CLABE debe tener 18 dígitos.';
+          return true;
+        }
       },
       logisticsRequest: {
         title: '',
@@ -359,11 +365,11 @@ export default {
       }
     },
     handleSubmit () {
-      this.beneficiaryPaymentDetails.verifierSignatureData = this.$refs.verifierPad.saveSignature()
-      this.beneficiaryPaymentDetails.authorizerSignatureData = this.$refs.authorizerPad.saveSignature()
+      const verifierSignatureData = this.$refs.verifierPad.saveSignature()
+      const authorizerSignatureData = this.$refs.authorizerPad.saveSignature()
 
       if (this.$refs.formBeneficiary.validate()) {
-        if (this.beneficiaryPaymentDetails.verifierSignatureData.isEmpty || this.beneficiaryPaymentDetails.authorizerSignatureData.isEmpty) {
+        if (verifierSignatureData.isEmpty || authorizerSignatureData.isEmpty) {
           Swal.fire({
             title: 'Error',
             text: 'Por favor, firme los campos de verificador y autorizador.',
@@ -372,12 +378,9 @@ export default {
           return
         }
         // Aquí puedes manejar el envío del formulario, por ejemplo, enviarlo a un servidor
-        Swal.fire({
-          title: 'Éxito',
-          text: 'Solicitud de logística enviada para aprobación.',
-          icon: 'success'
-        })
-        this.resetForm()
+        this.beneficiaryPaymentDetails.verifierSignatureData = verifierSignatureData.data
+        this.beneficiaryPaymentDetails.authorizerSignatureData = authorizerSignatureData.data
+        
       }
     }
   }

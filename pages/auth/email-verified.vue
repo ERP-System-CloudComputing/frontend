@@ -84,8 +84,7 @@ export default {
     async getCode () {
       const token = this.$route.query.token // * obtenemos el token de la url despues del -> ?
       if (!token) {
-        this.showAlert('Token not found or not provided')
-        this.$router.push('/')
+        this.showAlert('Token not found or not provided, check with a administrador')
         return
       }
       try {
@@ -120,11 +119,28 @@ export default {
       })
     },
     async verifyCode () {
+      const token = this.$route.query.token
+      if (!token) {
+        this.showAlert('Token not found or not provided, try sending email again')
+        return
+      }
+
+      // * Validacion de 6 digitos:
+      if (!this.verificationCode || this.verificationCode.length !== 6) {
+        this.showAlert('The verification code must be 6 digits long')
+        return
+      }
+
       if (!this.isValidToken) {
         return
       }
       this.loading = true
       try {
+        if (!this.personalEmail) {
+          const decoded = jwtDecoded(token)
+          this.personalEmail = decoded.email
+        }
+
         const response = await this.$axios.$post('/staff/verify-reset-code', {
           personalEmail: this.personalEmail,
           code: this.verificationCode

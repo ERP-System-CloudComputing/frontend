@@ -165,6 +165,16 @@ export default {
           icon: 'mdi-cogs',
           title: 'Maintenance',
           subtitle: 'View and create schedule for maintenance.'
+        },
+        capacity: {
+          icon: 'mdi-human-capacity-increase',
+          title: 'Capacity Building',
+          subtitle: 'Create and submit request for staff training'
+        },
+        'capacity-add': {
+          icon: 'mdi-human-capacity-increase',
+          title: 'Capacity Building',
+          subtitle: 'Create and submit request for staff training'
         }
       }
 

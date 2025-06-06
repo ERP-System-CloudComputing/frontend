@@ -109,7 +109,7 @@
 
       <div v-if="activeTab === 'inventory'">
         <!-- Statistics Cards -->
-        <InventoryCardsVue />
+        <InventoryCardsVue :infoInventory="infoInventory" />
         <!-- Update Inventory Section -->
         <div class="flex justify-between items-center flex-col sm:flex-row mt-6 bg-white py-9 px-5 rounded-2xl shadow-sm">
           <h3 class="text-xl font-semibold">
@@ -117,7 +117,7 @@
           </h3>
 
           <nuxt-link
-            to="/stock/create"
+            to="/inventory/create"
             class="px-16 py-3 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
                     hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white"
             style="color: white !important;"
@@ -207,8 +207,8 @@ export default {
           productId: '45656787',
           category: 'Office equipments',
           qtyPurchased: '5pcs',
-          unitPrice: '₦50,000.00',
-          totalAmount: '₦250,000.00',
+          unitPrice: '50,000.00',
+          totalAmount: '250,000.00',
           supplier: "Big Ben's Store",
           status: 'All functioning'
         },
@@ -220,8 +220,8 @@ export default {
           productId: '63196787',
           category: 'Automobile',
           qtyPurchased: '2pcs',
-          unitPrice: '₦1,500,000.00',
-          totalAmount: '₦3,000,000.00',
+          unitPrice: '1,500,000.00',
+          totalAmount: '3,000,000.00',
           supplier: 'Innoson Vehicles',
           status: 'All functioning'
         },
@@ -233,8 +233,8 @@ export default {
           productId: '328422AA',
           category: 'Electronics',
           qtyPurchased: '3pcs',
-          unitPrice: '₦150,000.00',
-          totalAmount: '₦450,000.00',
+          unitPrice: '150,000.00',
+          totalAmount: '450,000.00',
           supplier: "Big Ben's Store",
           status: '2 functioning'
         },
@@ -246,8 +246,8 @@ export default {
           productId: '45656787',
           category: 'Furnitures',
           qtyPurchased: '15pcs',
-          unitPrice: '₦100,000.00',
-          totalAmount: '₦1,500,000.00',
+          unitPrice: '100,000.00',
+          totalAmount: '1,500,000.00',
           supplier: 'Decorhub NG',
           status: 'All functioning'
         },
@@ -259,8 +259,8 @@ export default {
           productId: '00247791',
           category: 'Electronics',
           qtyPurchased: '25pcs',
-          unitPrice: '₦50,000.00',
-          totalAmount: '₦1,250,000.00',
+          unitPrice: '50,000.00',
+          totalAmount: '1,250,000.00',
           supplier: 'HP Abuja Stores',
           status: '20 functioning'
         },
@@ -272,8 +272,8 @@ export default {
           productId: '45656787',
           category: 'Office equipments',
           qtyPurchased: '5pcs',
-          unitPrice: '₦50,000.00',
-          totalAmount: '₦250,000.00',
+          unitPrice: '50,000.00',
+          totalAmount: '250,000.00',
           supplier: "Big Ben's Store",
           status: 'All functioning'
         }
@@ -283,11 +283,18 @@ export default {
         totalItems: 0,
         totalItemCost: 0,
         itemsLowInStock: 0
+      },
+      infoInventory: {
+        totalCategories: 0,
+        totalItems: 0,
+        totalItemCost: 0,
+        totalSuppliers: 0
       }
     }
   },
   async mounted () {
     await this.getStockItems()
+    this.fillInfoInventory()
   },
   methods: {
     formatCurrency (value) {
@@ -295,6 +302,17 @@ export default {
         style: 'currency',
         currency: 'MXN'
       }).format(value)
+    },
+    formatNumber (value) {
+      return parseFloat(value.toString().replace(/,/g, ''))
+    },
+    fillInfoInventory () {
+      this.infoInventory.totalCategories = 5 // Update with actual data
+      this.infoInventory.totalItems = this.inventoryItems.length
+      this.infoInventory.totalItemCost = this.formatCurrency(
+        this.inventoryItems.reduce((total, item) => total + (this.formatNumber(item.unitPrice) * this.formatNumber(item.qtyPurchased)), 0)
+      )
+      this.infoInventory.totalSuppliers = new Set(this.inventoryItems.map(item => item.supplier)).size
     },
     getStatusClass (status) {
       switch (status) {

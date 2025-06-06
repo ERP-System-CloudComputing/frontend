@@ -93,7 +93,7 @@
                   <label class="text-sm font-normal text-black">Category</label>
                   <v-select
                     v-model="newItem.category"
-                    :items="['Electronics', 'Furniture', 'Clothing']"
+                    :items="['Electronics', 'Furniture', 'Clothing', 'Food', 'Papelery']"
                     outlined
                     dense
                     placeholder="Select category"
@@ -122,6 +122,7 @@
                     outlined
                     dense
                     :rules="[rules.required, rules.positiveAmount]"
+                    :change="newItem.totalCost = newItem.unitPrice * newItem.quantity"
                   />
                 </v-col>
                 <v-col cols="12" md="6">
@@ -155,6 +156,7 @@
             color="primary"
             class="w-full max-w-xs px-8 py-3 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
                 hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white mt-8"
+            @click="saveItem"
           >
             Add Item
           </v-btn>
@@ -190,6 +192,58 @@ export default {
     }
   },
   methods: {
+    formatCurrency (value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'MXN'
+      }).format(value)
+    },
+    async saveItem () {
+      if (this.$refs.form.validate()) {
+        // Aquí puedes agregar la lógica para guardar el nuevo item
+        if (this.newItem.image === '') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Por favor, sube una imagen del producto.'
+          })
+          return
+        }
+
+        try {
+          const response = await this.$axios.post('/stock/create', this.newItem)
+
+          if (response.status === 201) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Éxito',
+              text: 'El item ha sido agregado correctamente.'
+            }).then(() => {
+              this.$router.push('/stock-inventory')
+            })
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ha ocurrido un error al agregar el item. Por favor, inténtalo de nuevo más tarde.'
+            })
+          }
+        } catch (error) {
+          console.error('Error al guardar el item:', error)
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Ha ocurrido un error al agregar el item. Por favor, inténtalo de nuevo más tarde.'
+          })
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Por favor, completa todos los campos requeridos correctamente.'
+        })
+      }
+    },
     triggerFileInput () {
       this.$refs.fileInput.click()
     },

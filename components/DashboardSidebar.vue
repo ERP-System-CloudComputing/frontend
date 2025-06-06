@@ -49,8 +49,7 @@ const menuItems = [
   { title: 'Office Budget', icon: 'mdi-piggy-bank', path: '/budget' },
   { title: 'Stocks and Inventory', icon: 'mdi-format-list-checkbox', path: '/stock-inventory' },
   { title: 'Notifications', icon: 'mdi-bell', path: '/notifications' },
-  { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' },
-  { title: 'Procurements', icon: 'mdi-cart-outline', path: '/procurements' }
+  { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' }
 ]
 
 export default {

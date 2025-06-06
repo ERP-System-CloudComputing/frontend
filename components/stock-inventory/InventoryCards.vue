@@ -24,30 +24,36 @@
 
 <script>
 export default {
+  props: {
+    infoInventory: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data () {
     return {
       cards: [
         {
-          value: '0',
-          label: 'Total request made',
+          value: this.infoInventory.totalCategories,
+          label: 'Categories',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: '0',
-          label: 'Total cost incurred',
+          value: this.infoInventory.totalItems || '0',
+          label: 'Total items',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: '0',
-          label: 'Pending request',
+          value: this.infoInventory.totalItemCost || '0',
+          label: 'Total item cost',
           iconBg: 'bg-yellow-100',
           iconColor: 'orange'
         },
         {
-          value: '0',
-          label: 'Approved request',
+          value: this.infoInventory.totalSuppliers || '0',
+          label: 'Total suppliers',
           iconBg: 'bg-green-100',
           iconColor: 'green'
         }

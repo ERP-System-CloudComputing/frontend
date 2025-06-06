@@ -185,6 +185,16 @@ export default {
           icon: 'mdi-format-list-bulleted',
           title: 'Update Stock',
           subtitle: 'Add new item to stocks.'
+        },
+        'inventory-create': {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Update Inventory',
+          subtitle: 'Add new item to stocks.'
+        },
+        notifications: {
+          icon: 'mdi-bell',
+          title: 'Notifications',
+          subtitle: 'View all notifications.'
         }
       }
 

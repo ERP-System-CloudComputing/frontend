@@ -44,9 +44,8 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     '~/plugins/fortawesome.js',
-    '~/plugins/vxe-table.js',
-    '~/plugins/tokensExpired.js',
-    '~/plugins/auth.js'
+    '~/plugins/vxe-table.js'
+    // '~/plugins/tokensExpired.js' // * YA lo maneja interna,ente @nuxtjs/auth-next
   ],
 
   tailwindcss: {
@@ -74,36 +73,56 @@ export default {
           maxAge: 1200, // * 20 min (segundos)
           global: true,
           required: true,
-          type: 'Bearer'
-        },
-        refreshToken: {
-          property: 'refreshToken',
-          maxAge: 172800, // * 2 dias (segundos)
-          global: true,
-          type: 'Bearer'
+          type: 'Bearer',
+          // name: 'Authorization', // * Generalmente no es necesario si el tipo es 'Bearer'
+          expiration: 'accessTokenExpiration'
         },
         user: {
           property: 'user',
-          autoFetch: true
+          autoFetch: true // * Si es true, se llamará automáticamente a la ruta '/user' para obtener el usuario actual
         },
         endpoints: {
-          login: { url: '/staff/login', method: 'POST', propertyName: false },
-          logout: false,
+          login: {
+            url: '/staff/login',
+            method: 'POST',
+            propertyName: false // * Debe ir asi si backend devuelte { accessToken, refreshToken, user: {...} }
+          },
+          logout: {
+            url: '/staff/logout',
+            method: 'POST'
+          },
           refreshToken: {
             url: '/staff/refresh-token',
             method: 'POST',
-            propertyName: 'accessToken'
+            propertyName: 'accessToken' // * El nombre de la propiedad que contiene el token en la respuesta del BACKEND si la respuesta es `{ accessToken, expireIn }` y refreshToken va en cooki
           },
-          user: false
-        }
+          // user: false
+          user: {
+            url: '/staff/user',
+            method: 'GET',
+            propertyName: 'user' // * El nombre de la propiedad que contiene el token en la respuesta del BACKEND
+          }
+        },
+        tokenRequired: true, // * Requiere un token para acceder a las rutas protegidas
+        tokenType: 'Bearer', // * El tipo de token que se enviará en la cabecera de autorización
+        autologout: true // * Importante: Esto activará la redirección automática si la renovación falla
       }
     },
     redirect: {
-      login: '/',
-      logout: '/',
-      home: '/dashboard'
+      login: '/', // * // La página a la que redirigir si no está autenticado
+      logout: '/', // * La página a la que redirigir después de cerrar sesión
+      home: '/dashboard' // * // La página a la que redirigir después de un login exitoso
     },
-    resetOnError: true
+    storage: {
+      sync: true, // * Sincroniza el estado de autenticación entre pestañas (requiere localStorage)
+      watch: true // * Observa cambios en el almacenamiento (útil para logout global)
+    },
+    resetOnError: true,
+    plugins: ['~/plugins/auth.js'], // * PLUGIN PRINCIPAL
+    fullPathRedirect: true // * Redirige a la ruta completa después de login
+    // setRefreshToken: true, // * Asegúrate de que el refreshToken se esté configurando
+    // refreshBeforeParse: true, // * Intenta refrescar antes de cada parse de la petición
+    // refreshInValidOnRefresh: true // * Invalida el token si el refresh falla
   },
   vuetify: {
     // ✅ CONFIGURACIÓN DE ICONOS

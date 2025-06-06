@@ -81,12 +81,12 @@
           <template #[`item.type`]="{ item }">
             {{ item.type }}
             <v-icon>
-              {{ item.type === 'Sent' ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }}
+              {{ item.type === 'Send' ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }}
             </v-icon>
           </template>
           <template #[`item.action`]="{ item }">
             <nuxt-link
-              to="`/memo/${item.id}"
+              :to="`/memo/${item.id}`"
               class="text-primario hover:underline font-medium"
               @click.prevent="openModal(item)"
             >
@@ -108,7 +108,7 @@
 </template>
 
 <script>
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 
 export default {
   layout: 'principal',
@@ -122,9 +122,9 @@ export default {
         selectedFilter: 'All memos'
       },
       filters: [
-        { text: 'Urgent', value: 'urgent' },
-        { text: 'Normal', value: 'normal' },
-        { text: 'Draft', value: 'draft' }
+        { text: 'All memos', value: 'All memos' },
+        { text: 'Send', value: 'Send' },
+        { text: 'Recived', value: 'Recived' }
       ],
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
@@ -132,20 +132,49 @@ export default {
         { text: 'Sent From', value: 'sentFrom' },
         { text: 'Sent To', value: 'sentTo' },
         { text: 'Date', value: 'date' },
-        { text: 'Attachment?', value: 'attachment' },
+        { text: 'Attachment?', value: 'haveAttachment' },
         { text: 'Memo Type', value: 'type' },
         { text: 'Action', value: 'action', sortable: false }
       ],
-      memos: [
-        { id: 1, title: 'Sample Memo 1', category: 'urgent', date: '2024-01-15' },
-        { id: 2, title: 'Sample Memo 2', category: 'normal', date: '2024-01-14' },
-        { id: 3, title: 'Sample Memo 3', category: 'draft', date: '2024-01-13' }
-      ]
+      memos: [],
+      allMemos: []
     }
   },
-  mounted () {
+  async mounted () {
+    await this.fetchAllMemos()
   },
   methods: {
+    async fetchAllMemos () {
+      try {
+        const response = await this.$axios.get('/memo/getAll')
+        if (response.status === 200) {
+          this.memos = response.data
+          this.allMemos = response.data
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: response.data.message
+          })
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.message
+        })
+      }
+    },
+    filterMemos () {
+      const search = this.selectFilters.search.toLowerCase()
+      const selectedFilter = this.selectFilters.selectedFilter
+
+      this.memos = this.allMemos.filter((memo) => {
+        const searchMatch = memo.title.toLowerCase().includes(search)
+        const filterMatch = selectedFilter === 'All memos' || (selectedFilter === memo.type)
+        return searchMatch && filterMatch
+      })
+    }
   },
   computed: {
     pageCount () {

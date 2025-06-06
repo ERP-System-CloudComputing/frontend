@@ -170,6 +170,11 @@ export default {
           icon: 'mdi-notebook-edit',
           title: 'Create Memo',
           subtitle: 'Create and send memos to designated offices.'
+        },
+        'memo-id': {
+          icon: 'mdi-notebook-edit',
+          title: 'Memo Details',
+          subtitle: 'Create and send memos to designated offices.'
         }
       }
 

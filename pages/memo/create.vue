@@ -178,7 +178,7 @@ export default {
     }
   },
   methods: {
-    saveMemo () {
+    async saveMemo () {
       if (this.$refs.form.validate()) {
         if (this.newMemo.haveAttachment === 'Yes') {
           if (!this.newMemo.typeAttachment) {
@@ -200,7 +200,23 @@ export default {
         }
 
         try {
-          console.log('Datos del nuevo memo:', this.newMemo)
+          const response = await this.$axios.post('/memo/create', this.newMemo)
+
+          if (response.status === 201) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Éxito',
+              text: 'Memo creado correctamente.'
+            })
+            this.$router.push('/memo')
+          } else {
+            console.warn('Error al crear el memo:', response.data)
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'No se pudo crear el memo. Por favor, inténtelo de nuevo más tarde.'
+            })
+          }
         } catch (error) {
           console.error('Error al crear el memo:', error)
           Swal.fire({

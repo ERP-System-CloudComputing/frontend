@@ -13,7 +13,7 @@
           </div>
           <div class="p-2 flex items-center justify-center rounded-full icono" :class="card.iconBg">
             <v-icon :color="card.iconColor" size="30">
-              mdi-piggy-bank
+              mdi-basket-check
             </v-icon>
           </div>
         </div>
@@ -25,48 +25,39 @@
 <script>
 export default {
   props: {
-    anualBudget: {
-      type: Object
+    infoLogistics: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
     return {
       cards: [
         {
-          value: this.formatCurrency(this.anualBudget.totalAmount || 0),
-          label: 'Total annual budget',
+          value: this.infoLogistics.total,
+          label: 'Total request made',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: this.formatCurrency(this.anualBudget.actualAmount || 0),
-          label: 'Amount used, YTD',
-          iconBg: 'bg-yellow-100',
-          iconColor: 'orange'
-        },
-        {
-          value: this.formatCurrency(this.anualBudget.totalBudgetBalance || 0),
-          label: 'Total budget balance',
+          value: this.infoLogistics.costTotal.replace('MX', ''),
+          label: 'Total cost incurred',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: `${this.anualBudget.budgetUsedPercentage || 0}%`,
-          label: 'Budget % used',
+          value: this.infoLogistics.pending,
+          label: 'Pending request',
+          iconBg: 'bg-yellow-100',
+          iconColor: 'orange'
+        },
+        {
+          value: this.infoLogistics.approved,
+          label: 'Approved request',
           iconBg: 'bg-green-100',
           iconColor: 'green'
         }
       ]
-    }
-  },
-  methods: {
-    formatCurrency (value) {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'MXN',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(value).replace('MX', '')
     }
   }
 }

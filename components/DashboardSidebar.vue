@@ -42,15 +42,14 @@ const menuItems = [
   { title: 'Staff', icon: 'mdi-account-group', path: '/staff' },
   { title: 'Payment Voucher', icon: 'mdi-cash', path: '/vouchers' },
   { title: 'Payroll', icon: 'mdi-currency-usd', path: '/payroll' },
-  { title: 'Memo', icon: 'mdi-file-document-outline', path: '/memos' },
+  { title: 'Memo', icon: 'mdi-file-document-outline', path: '/memo' },
   { title: 'Circulars', icon: 'mdi-email', path: '/circulars' },
   { title: 'Maintenance', icon: 'mdi-wrench', path: '/maintenance' },
   { title: 'Logistics', icon: 'mdi-truck-delivery', path: '/logistics' },
   { title: 'Office Budget', icon: 'mdi-piggy-bank', path: '/budget' },
-  { title: 'Stocks and Inventory', icon: 'mdi-warehouse', path: '/stocks' },
+  { title: 'Stocks and Inventory', icon: 'mdi-format-list-checkbox', path: '/stock-inventory' },
   { title: 'Notifications', icon: 'mdi-bell', path: '/notifications' },
-  { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' },
-  { title: 'Procurements', icon: 'mdi-cart-outline', path: '/procurements' }
+  { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' }
 ]
 
 export default {

@@ -13,7 +13,7 @@
           </div>
           <div class="p-2 flex items-center justify-center rounded-full icono" :class="card.iconBg">
             <v-icon :color="card.iconColor" size="30">
-              mdi-piggy-bank
+              mdi-format-list-bulleted
             </v-icon>
           </div>
         </div>
@@ -25,48 +25,39 @@
 <script>
 export default {
   props: {
-    anualBudget: {
-      type: Object
+    infoStock: {
+      type: Object,
+      default: () => ({})
     }
   },
   data () {
     return {
       cards: [
         {
-          value: this.formatCurrency(this.anualBudget.totalAmount || 0),
-          label: 'Total annual budget',
+          value: 5,
+          label: 'Categories',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: this.formatCurrency(this.anualBudget.actualAmount || 0),
-          label: 'Amount used, YTD',
-          iconBg: 'bg-yellow-100',
-          iconColor: 'orange'
-        },
-        {
-          value: this.formatCurrency(this.anualBudget.totalBudgetBalance || 0),
-          label: 'Total budget balance',
+          value: this.infoStock.totalItems || 0,
+          label: 'Total items',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: `${this.anualBudget.budgetUsedPercentage || 0}%`,
-          label: 'Budget % used',
+          value: this.infoStock.totalItemCost || 0,
+          label: 'Total item cost',
+          iconBg: 'bg-yellow-100',
+          iconColor: 'orange'
+        },
+        {
+          value: this.infoStock.itemsLowInStock || 0,
+          label: 'Items low in stock',
           iconBg: 'bg-green-100',
           iconColor: 'green'
         }
       ]
-    }
-  },
-  methods: {
-    formatCurrency (value) {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'MXN',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-      }).format(value).replace('MX', '')
     }
   }
 }

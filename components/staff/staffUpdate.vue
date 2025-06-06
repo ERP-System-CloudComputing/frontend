@@ -12,7 +12,7 @@
     <v-row class="bg-white rounded-t-lg">
       <v-col class="flex w-100">
         <span class="font-bold text-lg">
-          Add a New Staff
+          Edit Staff Profile
         </span>
       </v-col>
     </v-row>
@@ -22,7 +22,7 @@
         <div class="rounded-lg border border-gray-300 mx-3 justify-items-center ">
           <v-avatar
             size="160"
-            class="flex-col items-center mt-28 justify-center"
+            class="flex-col items-center mt-11 justify-center"
             style="cursor: pointer; background-color: #e5e7eb;"
             @click="FileInput"
           >
@@ -69,7 +69,7 @@
         </div>
       </v-col>
       <v-col cols="12" md="8">
-        <v-form ref="form" v-model="formValidar">
+        <v-form ref="form" v-model="formValidar" class="-space-y-5" @submit.prevent="validForm()">
           <v-row>
             <v-col cols="12" sm="6">
               <span>First name</span>
@@ -151,16 +151,14 @@
           </v-row>
           <v-row>
             <v-col cols="12" sm="6">
-              <span>Role</span>
-              <v-select
-                v-model="formData.role"
-                :items="roleOptions"
-                placeholder="Select role"
+              <span>Staff ID</span>
+              <v-text-field
+                v-model="formData.staffID"
+                placeholder="Staff ID"
                 class="rounded-lg"
                 outlined
                 dense
-                :rules="[required('Role')]"
-                @change="generateValues()"
+                disabled
               />
             </v-col>
             <v-col cols="12" sm="6">
@@ -178,18 +176,7 @@
             </v-col>
           </v-row>
 
-          <v-row>
-            <v-col cols="12" sm="6">
-              <span>Staff ID</span>
-              <v-text-field
-                v-model="formData.staffID"
-                placeholder="Staff ID"
-                class="rounded-lg"
-                outlined
-                dense
-                disabled
-              />
-            </v-col>
+          <v-row class="items-center">
             <v-col cols="12" sm="6">
               <span>Official email</span>
               <v-text-field
@@ -202,20 +189,64 @@
                 disabled
               />
             </v-col>
+            <v-col cols="12" sm="6">
+              <div class="px-3 w-full text-white">
+                <button
+                  type="submit"
+                  color="primary"
+                  class="py-2 w-full rounded-lg bg-gradient-to-br from-primario to-secundario"
+                >
+                  Edit Profile
+                </button>
+              </div>
+            </v-col>
           </v-row>
         </v-form>
       </v-col>
-      <v-col cols="12" md="4">
+    </v-row>
+    <v-row class="bg-white rounded-lg mt-9">
+      <v-col cols="12">
         <v-row>
-          <v-col class="justify-items-center text-white">
-            <div class="px-3 w-full">
+          <v-col>
+            <span class="font-bold text-lg">Assign Role</span>
+          </v-col>
+        </v-row>
+        <v-row class="items-center">
+          <v-col cols="12" md="4">
+            <div>
+              <span>User ID</span>
+              <v-text-field
+                v-model="formData.staffID"
+                placeholder="Staff ID"
+                class="rounded-lg"
+                outlined
+                dense
+                disabled
+              />
+            </div>
+          </v-col>
+          <v-col cols="12" md="4">
+            <span>Role</span>
+            <v-select
+              v-model="formData.role"
+              :items="roleOptions"
+              placeholder="Select role"
+              class="rounded-lg"
+              outlined
+              dense
+              :rules="[required('Role')]"
+              @change="generateValues()"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <div class="px-3 w-full text-white">
               <button
                 type="submit"
                 color="primary"
-                class="py-4 w-full rounded-lg bg-gradient-to-br from-primario to-secundario"
+                class="py-2 w-full rounded-lg bg-gradient-to-br from-primario to-secundario"
                 @click="validForm()"
               >
-                Add Staff
+                Submit
               </button>
             </div>
           </v-col>
@@ -230,6 +261,20 @@ export default {
   data () {
     return {
       formValidar: false,
+      formData: {
+        firstName: '',
+        lastName: '',
+        personalEmail: '',
+        phoneNumber: '',
+        gender: '',
+        houseNumber: '',
+        role: '',
+        designation: '',
+        staffID: '',
+        officialEmail: '',
+        password: '',
+        photo: ''
+      },
       genderOptions: [
         'Female',
         'Male',
@@ -260,22 +305,11 @@ export default {
         'Customer Service': 'CS',
         Cleaning: 'C',
         Security: 'S'
-      },
-      formData: {
-        firstName: '',
-        lastName: '',
-        personalEmail: '',
-        phoneNumber: '',
-        gender: '',
-        houseNumber: '',
-        role: '',
-        designation: '',
-        staffID: '',
-        officialEmail: '',
-        password: '',
-        photo: null
       }
     }
+  },
+  mounted () {
+    this.getStaff()
   },
   methods: {
     staffAll () {
@@ -336,19 +370,26 @@ export default {
     // Backend
     validForm () {
       if (this.$refs.form.validate()) {
-        this.createStaff()
+        this.updateStaff()
+        // this.staffAll()
       } else {
         alert('Complete all fields')
       }
     },
-    async createStaff () {
+    async getStaff () {
       try {
-        // console.log(this.formData)
-        await this.$axios.post('/staff/create', this.formData)
+        const response = await this.$axios.get(`/staff/getById/${this.$route.query.id}`)
+        this.formData = response.data
+      } catch (error) {
+        // console.log()
+      }
+    },
+    async updateStaff () {
+      try {
+        await this.$axios.put(`/staff/update/${this.formData.id}`, this.formData)
         alert('Success')
         this.$router.push('/staff')
       } catch (error) {
-        // console.log(error)
         const errorMessage = error.message || 'Error Staff'
         this.$store.dispatch('alert/triggerAlert', {
           message: errorMessage,

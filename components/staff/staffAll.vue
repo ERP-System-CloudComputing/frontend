@@ -1,9 +1,10 @@
 <template>
-  <v-container fluid class="px-7 pt-10">
-    <v-row class=" rounded-xl bg-white pt-4 h-32">
-      <v-col md="3">
+  <v-container fluid class="px-3 pt-3">
+    <v-row class=" rounded-lg bg-white pt-4">
+      <v-col cols="12" sm="3">
         <span>Quick search a staff</span>
         <v-text-field
+          v-model="filterName"
           class="rounded-lg"
           label="Enter search word"
           append-icon="mdi-magnify"
@@ -11,9 +12,10 @@
           hide-details
           outlined
           color="gray"
+          @change="FilterName()"
         />
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="3">
         <div class=" justify-start lg:pl-12 ">
           <span class="font-extrabold text-3xl ">
             {{ staffs.length }}
@@ -23,99 +25,102 @@
           </span>
         </div>
       </v-col>
-      <v-col>
+      <v-col cols="12" sm="3">
         <span>
           Filter staff
         </span>
         <v-select
-          v-model="filterRole"
-          class=" rounded-lg"
-          label="AllStaff"
-          :items="FilterStaff"
+          placeholder="Select Option"
           solo
+          flat
+          hide-details
           height="58"
           background-color="#F2F7FF"
-          single-line
-          @change="FilterRole"
+          :items="FilterStaff"
+          @input="FilterRole"
         />
       </v-col>
-      <v-col align-self="center" align="center">
-        <button class=" text-white flex w-52 justify-center rounded-lg bg-gradient-to-br from-blue-400  to-blue-800 hover:from-blue-600 shadow-md p-4" @click="staffAdd">
-          Add New Staff
-        </button>
+      <v-col cols="12" sm="3" align-self="center" align="center">
+        <div class="w-full">
+          <button class=" text-white w-full sm:w-52 sm:mt-4 flex justify-center rounded-lg bg-gradient-to-br from-primario to-secundario hover:from-blue-600 shadow-md p-4" @click="staffAdd">
+            Add New Staff
+          </button>
+        </div>
       </v-col>
     </v-row>
     <v-row class="mt-7 bg-white rounded-xl">
-      <v-data-table
-        class="w-full rounded-xl "
-        :headers="headers"
-        :items="staffs"
-        :items-per-page="itemsPerPage"
-        :page.sync="page"
-        hide-default-footer
-        dense
-      >
-        <template #[`item.sn`]="{ index }">
-          {{ (page - 1) * itemsPerPage + index + 1 }}
-        </template>
-        <template #top>
-          <v-toolbar class="bg-blue rounded-xl" flat>
-            <v-toolbar-title class="font-bold">
-              All Staff
-            </v-toolbar-title>
-            <v-spacer />
-            <div class="flex items-center justify-end text-sm space-x-2">
-              <span>Showing </span>
-              <div>
-                <v-select
-                  v-model="itemsPerPage"
-                  :items="[1,6,12,18,22]"
-                  dense
-                  hide-details
-                  class="w-12 gradient-border "
-                />
+      <v-col>
+        <v-data-table
+          class="w-full rounded-xl"
+          :headers="headers"
+          :items="staffs"
+          :items-per-page="itemsPerPage"
+          :page.sync="page"
+          hide-default-footer
+          dense
+        >
+          <template #[`item.sn`]="{ index }">
+            {{ (page - 1) * itemsPerPage + index + 1 }}
+          </template>
+          <template #top>
+            <v-toolbar class="bg-blue rounded-xl" flat>
+              <v-toolbar-title class="font-bold">
+                All Staff
+              </v-toolbar-title>
+              <v-spacer />
+              <div class="flex items-center justify-end text-sm space-x-2">
+                <span>Showing </span>
+                <div>
+                  <v-select
+                    v-model="itemsPerPage"
+                    :items="[1,6,12,18,22]"
+                    dense
+                    hide-details
+                    class="w-12 gradient-border"
+                  />
+                </div>
+                <span> per page</span>
               </div>
-              <span> per page</span>
+            </v-toolbar>
+          </template>
+          <template #footer>
+            <div class="flex justify-between items-center px-4 py-2 ">
+              <v-pagination
+                v-model="page"
+                :length="pageCount"
+              />
             </div>
-          </v-toolbar>
-        </template>
-        <template #footer>
-          <div class="flex justify-between items-center px-4 py-2 ">
-            <v-pagination
-              v-model="page"
-              :length="pageCount"
-            />
-          </div>
-        </template>
-        <template #[`item.actions`]="{ item }">
-          <v-menu offset-y>
-            <template #activator="{ on, attrs }">
-              <div class=" bg-gradient-to-r from-blue-400 to-blue-800 bg-clip-text text-transparent  hover:from-blue-500 hover:to-blue-900 transition-all duration-300">
-                <span
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  View More
-                </span>
-              </div>
-            </template>
-            <v-list>
-              <v-list-item @click="openDialog(item)">
-                <v-icon small class="mr-2">
-                  mdi-pencil
-                </v-icon>
-                <v-list-item-title>Editar</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="openDialog(item)">
-                <v-icon small class="mr-2">
-                  mdi-delete
-                </v-icon>
-                <v-list-item-title>Eliminar</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </template>
-      </v-data-table>
+          </template>
+          <template #[`item.actions`]="{ item }">
+            <v-menu offset-y>
+              <template #activator="{ on, attrs }">
+                <div class=" bg-gradient-to-r from-blue-400 to-blue-800 bg-clip-text text-transparent  hover:from-blue-500 hover:to-blue-900 transition-all duration-300">
+                  <span
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    View More
+                  </span>
+                </div>
+              </template>
+              <v-list>
+                <v-list-item @click="staffUpdate(item)">
+                  <v-icon small class="mr-2">
+                    mdi-pencil
+                  </v-icon>
+                  <v-list-item-title>Edit</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="openDialog(item)">
+                  <v-icon small class="mr-2">
+                    mdi-delete
+                  </v-icon>
+                  <v-list-item-title>Delete</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
+        </v-data-table>
+      </v-col>
     </v-row>
     <v-dialog v-model="confirmDialog" persistent max-width="300px">
       <v-card color="indigo lighten-5">
@@ -158,6 +163,7 @@ export default {
         'Human Resources staff'
       ],
       filterRole: '',
+      filterName: '',
       staffs: [],
       itemsPerPage: 12,
       page: 1,
@@ -188,6 +194,9 @@ export default {
     staffAdd () {
       this.$router.push('/staff/add')
     },
+    staffUpdate (staff) {
+      this.$router.push(`/staff/update?id=${staff.id}`)
+    },
     async loadStaffs () {
       try {
         const response = await this.$axios.get('/staff/getAll')
@@ -203,6 +212,17 @@ export default {
           return this.loadStaffs()
         }
         const response = await this.$axios.get(`/staff/getByRol/${clean}`)
+        this.staffs = response.data ? [response.data] : []
+      } catch (error) {
+        // console.log(error)
+      }
+    },
+    async FilterName () {
+      try {
+        if (this.filterName === '') {
+          return this.loadStaffs()
+        }
+        const response = await this.$axios.get(`/staff/getByName/${this.filterName}`)
         this.staffs = response.data ? [response.data] : []
       } catch (error) {
         // console.log(error)

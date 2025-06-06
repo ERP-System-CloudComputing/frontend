@@ -123,6 +123,21 @@ export default {
           title: 'Add Staff',
           subtitle: 'Fill out the form to create a new staff member.'
         },
+        'staff-update': {
+          icon: 'mdi-account-plus',
+          title: 'Update Staff',
+          subtitle: 'Fill out the form to create a new staff member.'
+        },
+        vouchers: {
+          icon: 'mdi-cash',
+          title: 'Payment Voucher',
+          subtitle: 'Create payment voucher'
+        },
+        'vouchers-add': {
+          icon: 'mdi-cash',
+          title: 'Payment Voucher',
+          subtitle: 'Create payment voucher'
+        },
         budget: {
           icon: 'mdi-piggy-bank',
           title: 'Office Budget',
@@ -172,6 +187,31 @@ export default {
           icon: 'mdi-cash-multiple',
           title: 'Add Staff',
           subtitle: 'Generate and send payroll to account.'
+        },
+        maintenance: {
+          icon: 'mdi-cogs',
+          title: 'Maintenance',
+          subtitle: 'View and create schedule for maintenance.'
+        },
+        'maintenance-add': {
+          icon: 'mdi-cogs',
+          title: 'Maintenance',
+          subtitle: 'View and create schedule for maintenance.'
+        },
+        capacity: {
+          icon: 'mdi-human-capacity-increase',
+          title: 'Capacity Building',
+          subtitle: 'Create and submit request for staff training'
+        },
+        'capacity-add': {
+          icon: 'mdi-human-capacity-increase',
+          title: 'Capacity Building',
+          subtitle: 'Create and submit request for staff training'
+        },
+        'capacity-update': {
+          icon: 'mdi-human-capacity-increase',
+          title: 'Capacity Building',
+          subtitle: 'Create and submit request for staff training'
         }
       }
 

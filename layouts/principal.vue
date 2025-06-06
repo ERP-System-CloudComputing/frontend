@@ -20,6 +20,7 @@ export default {
     DashboardSidebarVue,
     DashboardTopbarVue
   },
+  middleware: 'auth',
   data () {
     return {
       drawer: false,

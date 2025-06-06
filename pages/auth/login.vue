@@ -1,6 +1,6 @@
 <template>
-  <div class="flex box-border min-h-screen">
-    <div class="flex flex-col w-1/2 p-16">
+  <div class="md:flex box-border min-h-screen">
+    <div class="flex flex-col md:w-1/2 p-16">
       <div class="flex justify-between items-center">
         <div>
           <a href="/">
@@ -33,7 +33,7 @@
             type="text"
             name="email"
             placeholder="Enter email address"
-            class="w-full p-2 border border-gray-300 rounded-md"
+            class="w-full p-2 border border-gray-300 rounded-md border-solid"
             required
           >
         </div>
@@ -46,7 +46,7 @@
             :type="showPassword ? 'text' : 'password'"
             name="password"
             placeholder="**********"
-            class="w-full p-2 border border-gray-300 rounded-md"
+            class="w-full p-2 border border-gray-300 rounded-md border-solid"
             required
           >
           <button
@@ -64,7 +64,7 @@
 
         <div class="mt-8 flex justify-between items-center">
           <label class="inline-flex items-center">
-            <input v-model="user.rememberMe" type="checkbox" class="mr-1">
+            <input v-model="user.rememberMe" type="checkbox" class="mr-1 border-solid">
             <span>Remember me</span>
           </label>
           <NuxtLink to="/auth/recover-password" class="text-primario hover:scale-105 transform duration-500">
@@ -80,8 +80,7 @@
         >
       </form>
     </div>
-
-    <div class="w-1/2 relative">
+    <div class="hidedn md:block md:w-1/2 relative">
       <img src="../../static/login.png" alt="Logo Image" class="absolute inset-0 w-full h-full object-cover">
     </div>
   </div>
@@ -94,6 +93,7 @@ import Swal from 'sweetalert2'
 
 export default {
   components: { FontAwesomeIcon },
+  middleware: 'isAuth',
   data () {
     return {
       showPassword: false,
@@ -108,30 +108,87 @@ export default {
       }
     }
   },
+  mounted () {
+    if (this.$route.query.session === 'expired') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Session expired!',
+        text: 'Your session has expired. Please log in again.'
+      })
+    }
+    // * Cargamos el estado de rememberMe si existe en localStorage:
+    const storedRememberMe = localStorage.getItem('rememberMe')
+    if (storedRememberMe !== null) {
+      this.user.rememberMe = storedRememberMe === 'true'
+    }
+
+    const rememberMeOn = localStorage.getItem('rememberMe') === 'true'
+    if (rememberMeOn) {
+      this.$router.push('/dashboard')
+    }
+  },
   methods: {
     async login () {
+      // * Guardamos el estado de rememberMe antes de llamar a la API:
+      localStorage.setItem('rememberMe', this.user.rememberMe.toString())
       try {
-        const response = await this.$axios.$post('/staff/login', {
-          personalEmail: this.user.personalEmail,
-          password: this.user.password,
-          rememberMe: this.user.rememberMe
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          withCredentials: true // * Para las Cookies HTTP-only
+        // await this.$axios.$post('/staff/login', {
+        //   personalEmail: this.user.personalEmail,
+        //   password: this.user.password,
+        //   rememberMe: this.user.rememberMe
+        // }, {
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   withCredentials: true // * Para las Cookies HTTP-only y se envíen y reciban las cookies
+        // })
+
+        const response = await this.$auth.loginWith('local', {
+          data: this.user
         })
+        if (response.status === 200) {
+          this.$router.push('/dashboard')
+        }
 
-        // * Guardar el token en el almacenamiento local:
-        this.$auth.setUserToken(response.accessToken)
+        // if (this.user.rememberMe) {
+        //   // await localStorage.setItem('auth.accessToken', response.accessToken)
+        //   await this.$auth.setUserToken(response.accessToken) // * Guardamos el token en el almacenamiento local de Nuxt Auth
+        // } else {
+        //   // * Almacenamos el token en sessionStorage de la forma de Nuxt Auth:
+        //   await this.$auth.setUserToken(response.accessToken) // * // Esto puede ser redundante si ya está en las cookies
+        //   // await sessionStorage.setItem('auth.accessToken', response.accessToken)
+        // }
 
-        this.$router.push('/dashboard')
+        // this.$router.push('/dashboard')
       } catch (error) {
+        this.user.personalEmail = ''
+        this.user.password = ''
+        this.user.rememberMe = false
+
         // alert(error.response?.data?.message || 'Error al iniciar sesión')
+        this.$auth.reset() // * Limpiar el estado de autenticación local
+        // localStorage.removeItem('auth._token.local')
+        localStorage.removeItem('auth._tokenlocal')
+        // localStorage.removeItem('auth._refreshToken.local') // Limpiar también el refresh token
+        localStorage.removeItem('auth._token_expiration.local')
+        localStorage.removeItem('rememberMe')
+        sessionStorage.removeItem('auth.accessToken') // Limpiar sessionStorage por si acaso
+        localStorage.removeItem('rememberMe') // Limpiar el estado de rememberMe
+
+        let errorMessage = 'An error occurred during login'
+
+        if (error.response) {
+          errorMessage = error.response.data.message ||
+        (error.response.status === 401
+          ? 'Invalid credentials'
+          : error.response.status === 400
+            ? 'Invalid email or password'
+            : 'Error during login')
+        }
         Swal.fire({
           icon: 'error',
           title: 'Incorrect!',
-          text: 'Opps, you have entered wrong Password or e-mail',
+          text: errorMessage,
           footer: '<a href="/auth/recover-password"> forgot your password? Click here for recover it</a>'
           // footer: '<a href="/auth/email-verified">Email not confirmed? Active your account here</a>'
         })

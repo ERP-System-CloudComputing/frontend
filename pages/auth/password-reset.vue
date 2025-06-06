@@ -1,6 +1,6 @@
 <template>
   <div class="flex box-border min-h-screen">
-    <div class="flex flex-col w-1/2 p-16">
+    <div class="flex flex-col md:w-1/2 p-16">
       <div class="flex justify-between items-center">
         <div>
           <a href="/">
@@ -57,7 +57,7 @@
           <input
             id="confirmPassword"
             v-model="confirmedPassword"
-            :type="showPassword ? 'text' : 'password'"
+            :type="showNewPasswordConfirm ? 'text' : 'password'"
             name="password"
             placeholder="**********"
             class="w-full p-2 border border-gray-300 rounded-md"
@@ -67,10 +67,10 @@
             type="button"
             class="absolute right-3 top-9 p-1"
             arial-label="Show password"
-            @click="showPassword = !showPassword"
+            @click="showNewPasswordConfirm = !showNewPasswordConfirm"
           >
             <FontAwesomeIcon
-              :icon="showPassword ? 'eye' : 'eye-slash'"
+              :icon="showNewPasswordConfirm ? 'eye' : 'eye-slash'"
               class="text-gray-500"
             />
           </button>
@@ -85,7 +85,7 @@
       </form>
     </div>
 
-    <div class="w-1/2 relative">
+    <div class="hidden md:block md:w-1/2 relative">
       <img src="../../static/recover-password.png" alt="Logo Image" class="absolute inset-0 w-full h-full object-cover">
     </div>
   </div>
@@ -101,6 +101,7 @@ export default {
   data () {
     return {
       showPassword: false,
+      showNewPasswordConfirm: false,
       icons: {
         eye: faEye,
         eyeSlash: faEyeSlash
@@ -122,6 +123,7 @@ export default {
         timer: 5000,
         showConfirmButton: false
       })
+      this.$router.push('/')
     }
   },
   methods: {
@@ -133,6 +135,8 @@ export default {
           title: 'Passwords do not match',
           text: 'Please, enter the same password in both fields'
         })
+        this.newPassword = ''
+        this.confirmedPassword = ''
         return false
       }
       if (this.newPassword.length < 8 || this.confirmedPassword < 8) {
@@ -141,6 +145,8 @@ export default {
           title: 'Password too short',
           text: 'Please, enter a password with at least 8 characters'
         })
+        this.newPassword = ''
+        this.confirmedPassword = ''
         return false
       }
       return true
@@ -170,6 +176,8 @@ export default {
           title: 'Error',
           text: error.response?.data?.message || 'Something went wrong, try again later'
         })
+        this.newPassword = ''
+        this.confirmedPassword = ''
       } finally {
         this.loading = false
       }

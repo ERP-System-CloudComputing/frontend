@@ -1,6 +1,6 @@
 <template>
   <div class="flex box-border min-h-screen">
-    <div class="flex flex-col w-1/2 p-16">
+    <div class="flex flex-col md:w-1/2 p-16">
       <div class="flex justify-between items-center">
         <div>
           <a href="/">
@@ -61,8 +61,8 @@
       </form>
     </div>
 
-    <div class="w-1/2 relative">
-      <img src="../../static/recover-password.png" alt="Logo Image" class="absolute inset-0 w-full h-full object-cover">
+    <div class="hidedn md:block md:w-1/2 relative">
+      <img src="../../static/email-verified.png" alt="Logo Image" class="absolute inset-0 w-full h-full object-cover">
     </div>
   </div>
 </template>
@@ -84,7 +84,7 @@ export default {
     async getCode () {
       const token = this.$route.query.token // * obtenemos el token de la url despues del -> ?
       if (!token) {
-        this.showAlert('Token not found or not provided')
+        this.showAlert('Token not found or not provided, check with a administrador')
         return
       }
       try {
@@ -119,11 +119,28 @@ export default {
       })
     },
     async verifyCode () {
+      const token = this.$route.query.token
+      if (!token) {
+        this.showAlert('Token not found or not provided, try sending email again')
+        return
+      }
+
+      // * Validacion de 6 digitos:
+      if (!this.verificationCode || this.verificationCode.length !== 6) {
+        this.showAlert('The verification code must be 6 digits long')
+        return
+      }
+
       if (!this.isValidToken) {
         return
       }
       this.loading = true
       try {
+        if (!this.personalEmail) {
+          const decoded = jwtDecoded(token)
+          this.personalEmail = decoded.email
+        }
+
         const response = await this.$axios.$post('/staff/verify-reset-code', {
           personalEmail: this.personalEmail,
           code: this.verificationCode

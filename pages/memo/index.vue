@@ -2,42 +2,43 @@
   <div>
     <div class="flex justify-between items-center mb-6 px-5 py-6 bg-white rounded-2xl">
       <div class="w-full flex flex-col md:flex-row gap-4 justify-between md:items-center">
+        <div class="">
+          <div class="text-2xl font-extrabold">
+            {{ memos.length }}
+          </div>
+          <div class="text-sm text-gray-500">
+            Total circulars
+          </div>
+        </div>
         <div class="w-full md:max-w-xs">
-          <label class="text-sm font-normal">Quick search a circular</label>
+          <label class="text-sm font-normal">Quick search a memo</label>
           <v-text-field
             v-model="selectFilters.search"
             placeholder="Enter search word"
             outlined
             dense
             append-icon="mdi-magnify"
-            @input="filterCirculars"
+            @input="filterMemos"
           />
         </div>
-        <div class="">
-          <div class="text-2xl font-extrabold">
-            {{ circulars.length }}
-          </div>
-          <div class="text-sm text-gray-500">
-            Total circulars
-          </div>
-        </div>
         <div>
-          <label class="text-sm font-normal">Filter circulars</label>
+          <label class="text-sm font-normal">Filter memo</label>
           <v-select
             v-model="selectFilters.selectedFilter"
             :items="filters"
             placeholder="All memos"
             outlined
             dense
-            @change="filterCirculars"
+            append-icon="mdi-menu-down"
+            @change="filterMemos"
           />
         </div>
         <nuxt-link
-          to="/circulars/create"
+          to="/memo/create"
           class="flex justify-center items-center py-3 h-11 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
                 hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white button"
         >
-          Create Circular
+          Create Memo
         </nuxt-link>
       </div>
     </div>
@@ -47,7 +48,7 @@
         <v-data-table
           class="w-full rounded-xl "
           :headers="headers"
-          :items="circulars"
+          :items="memos"
           :items-per-page="itemsPerPage"
           :page.sync="page"
           hide-default-footer
@@ -59,7 +60,7 @@
           <template #top>
             <v-toolbar class="bg-blue rounded-xl" flat>
               <v-toolbar-title class="font-bold">
-                All Circulars
+                All Memos
               </v-toolbar-title>
               <v-spacer />
               <div class="flex items-center justify-end text-sm space-x-2">
@@ -80,17 +81,17 @@
           <template #[`item.type`]="{ item }">
             {{ item.type }}
             <v-icon>
-              {{ item.type === 'Sent' ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }}
+              {{ item.type === 'Send' ? 'mdi-arrow-top-right' : 'mdi-arrow-bottom-left' }}
             </v-icon>
           </template>
           <template #[`item.action`]="{ item }">
-            <span
-              class="text-blue-600 hover:text-blue-800 cursor-pointer"
-              text
-              @click="openModal(item)"
+            <nuxt-link
+              :to="`/memo/${item.id}`"
+              class="text-primario hover:underline font-medium"
+              @click.prevent="openModal(item)"
             >
-              View More
-            </span>
+              View more
+            </nuxt-link>
           </template>
           <template #footer>
             <div class="flex justify-between items-center px-4 py-2 ">
@@ -103,38 +104,6 @@
         </v-data-table>
       </v-card-text>
     </v-card>
-
-    <v-dialog v-model="viewMoreDialog" max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="text-h6">{{ selectedCircular.title }}</span>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="viewMoreDialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-
-        <v-card-text>
-          <p><strong>Enviado desde:</strong> {{ selectedCircular.sentFrom }}</p>
-          <p><strong>Enviado a:</strong> {{ selectedCircular.sentTo }}</p>
-          <p><strong>Fecha:</strong> {{ selectedCircular.date }}</p>
-          <p><strong>Tipo:</strong> {{ selectedCircular.type }}</p>
-
-          <v-divider class="my-3"></v-divider>
-
-          <p><strong>Mensaje:</strong></p>
-          <v-alert type="info" border="left" colored-border>
-            {{ selectedCircular.message }}
-          </v-alert>
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="viewMoreDialog = false">Cerrar</v-btn>
-          <v-btn color="primary" text @click="goToUpdate">Actualizar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
@@ -152,82 +121,64 @@ export default {
         search: '',
         selectedFilter: 'All memos'
       },
-      selectedCircular: {
-        title: '',
-        sentFrom: [],
-        sentTo: [],
-        date: '',
-        type: '',
-        message: ''
-      },
-      filters: ['All memos', 'Sent', 'Received'],
+      filters: [
+        { text: 'All memos', value: 'All memos' },
+        { text: 'Send', value: 'Send' },
+        { text: 'Recived', value: 'Recived' }
+      ],
       headers: [
         { text: 'S/N', value: 'sn', sortable: false },
-        { text: 'Circular Title', value: 'title' },
+        { text: 'Memo Title', value: 'title' },
         { text: 'Sent From', value: 'sentFrom' },
         { text: 'Sent To', value: 'sentTo' },
         { text: 'Date', value: 'date' },
-        { text: 'Circular Type', value: 'type' },
+        { text: 'Attachment?', value: 'haveAttachment' },
+        { text: 'Memo Type', value: 'type' },
         { text: 'Action', value: 'action', sortable: false }
       ],
-      allCirculars: [], // Store all circulars fetched from the API
-      circulars: []
+      memos: [],
+      allMemos: []
     }
   },
-  mounted () {
-    this.fetchCirculars()
+  async mounted () {
+    await this.fetchAllMemos()
   },
   methods: {
-    async fetchCirculars () {
+    async fetchAllMemos () {
       try {
-        const response = await this.$axios.get('/circular/getAll')
-        const { data } = response
-
-        this.allCirculars = [
-          ...data.map(circular => ({
-            ...circular,
-            sn: this.circulars.length + 1, // Assign a serial number
-            date: new Date(circular.date).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit'
-            })
-          }))
-        ]
-
-        this.circulars = [...this.allCirculars]
+        const response = await this.$axios.get('/memo/getAll')
+        if (response.status === 200) {
+          this.memos = response.data
+          this.allMemos = response.data
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: response.data.message
+          })
+        }
       } catch (error) {
         Swal.fire({
           icon: 'error',
-          title: 'Error al cargar circulares',
-          text: error.message || 'An error occurred while fetching circulars.'
+          title: 'Oops...',
+          text: error.message
         })
       }
     },
-    filterCirculars () {
-      // Filtrar tanto search como selectedFilter
+    filterMemos () {
       const search = this.selectFilters.search.toLowerCase()
       const selectedFilter = this.selectFilters.selectedFilter
 
-      this.circulars = this.allCirculars.filter((circular) => {
-        const searchMatch = circular.title.toLowerCase().includes(search)
-        const filterMatch = selectedFilter === 'All memos' ||
-          (selectedFilter === 'Sent' && circular.type === 'Sent') ||
-          (selectedFilter === 'Received' && circular.type === 'Received')
+      this.memos = this.allMemos.filter((memo) => {
+        const searchMatch = memo.title.toLowerCase().includes(search)
+        const filterMatch = selectedFilter === 'All memos' || (selectedFilter === memo.type)
         return searchMatch && filterMatch
       })
-    },
-    openModal (circular) {
-      this.selectedCircular = { ...circular }
-      this.viewMoreDialog = true
-    },
-    goToUpdate () {
-      this.$router.push(`/circulars/update/${this.selectedCircular.id}`)
     }
   },
   computed: {
     pageCount () {
-      return Math.ceil(this.circulars.length / this.itemsPerPage)
+      return Math.ceil(this.memos.length / this.itemsPerPage)
     }
   }
 }

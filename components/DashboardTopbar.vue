@@ -12,10 +12,10 @@
     <div class="flex flex-col">
       <div class="flex items-center">
         <v-icon v-if="pageDetails().icon" class="mr-2" color="blue darken-4">
-          {{ pageDetails().icon }}
+          {{ pageDetails().icon ? pageDetails().icon : 'mdi-home' }}
         </v-icon>
         <h1 class="font-extrabold text-xl">
-          {{ pageDetails().title }}
+          {{ pageDetails().title ? pageDetails().title : 'Dashboard' }}
         </h1>
       </div>
       <span v-if="!isMobile" class="font-normal text-sm mt-1">{{ pageDetails().subtitle }}</span>
@@ -143,7 +143,7 @@ export default {
           title: 'Office Budget',
           subtitle: 'View, create and send budget request.'
         },
-        'budget-create': {
+        'budget-create-id': {
           icon: 'mdi-piggy-bank',
           title: 'Create Budget',
           subtitle: 'Create and send budget request.'
@@ -211,7 +211,62 @@ export default {
         'capacity-update': {
           icon: 'mdi-human-capacity-increase',
           title: 'Capacity Building',
-          subtitle: 'Create and submit request for staff training'
+          subtitle: 'Create and submit request for staff training',
+        },
+        'circulars-update-id': {
+          icon: 'mdi-receipt-text',
+          title: 'Update Circular',
+          subtitle: 'Update and send circulars to designated offices.'
+        },
+        logistics: {
+          icon: 'mdi-truck',
+          title: 'Logistics',
+          subtitle: 'Make and send logistics request.'
+        },
+        'logistics-id': {
+          icon: 'mdi-truck',
+          title: 'Logistics Details',
+          subtitle: 'View details of logistic request.'
+        },
+        'logistics-create': {
+          icon: 'mdi-truck',
+          title: 'Logistics Request',
+          subtitle: 'Make and send logistics request.'
+        },
+        memo: {
+          icon: 'mdi-notebook-edit',
+          title: 'Memo',
+          subtitle: 'Create and send memos to designated offices.'
+        },
+        'memo-create': {
+          icon: 'mdi-notebook-edit',
+          title: 'Create Memo',
+          subtitle: 'Create and send memos to designated offices.'
+        },
+        'memo-id': {
+          icon: 'mdi-notebook-edit',
+          title: 'Memo Details',
+          subtitle: 'Create and send memos to designated offices.'
+        },
+        'stock-inventory': {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Stocks and Inventory',
+          subtitle: 'Update stoke and inventory table.'
+        },
+        'stock-create': {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Update Stock',
+          subtitle: 'Add new item to stocks.'
+        },
+        'inventory-create': {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Update Inventory',
+          subtitle: 'Add new item to stocks.'
+        },
+        notifications: {
+          icon: 'mdi-bell',
+          title: 'Notifications',
+          subtitle: 'View all notifications.'
         }
       }
 

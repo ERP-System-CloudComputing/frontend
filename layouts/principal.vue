@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <DashboardSidebarVue />
-    <DashboardTopbarVue />
+    <DashboardSidebarVue :is-mobile="isMobile" :drawer="drawer" @update:drawer="drawer = $event" />
+    <DashboardTopbarVue :is-mobile="isMobile" @toggle-sidebar="toggleDrawer" />
 
-    <v-main class="bg-gray-fondo mt-10">
+    <v-main class="bg-gray-fondo mt-12 max-h-full">
       <div class="mx-4">
         <nuxt />
       </div>
@@ -19,6 +19,25 @@ export default {
   components: {
     DashboardSidebarVue,
     DashboardTopbarVue
+  },
+  middleware: 'auth',
+  data () {
+    return {
+      drawer: false,
+      isMobile: false
+    }
+  },
+  mounted () {
+    this.checkMobile()
+    window.addEventListener('resize', this.checkMobile)
+  },
+  methods: {
+    checkMobile () {
+      this.isMobile = window.innerWidth < 960 // o el breakpoint que quieras
+    },
+    toggleDrawer () {
+      this.drawer = !this.drawer
+    }
   }
 }
 </script>

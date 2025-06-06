@@ -1,5 +1,10 @@
 <template>
-  <v-navigation-drawer app permanent class="border-none">
+  <v-navigation-drawer
+    app
+    v-model="localDrawer"
+    :permanent="!isMobile"
+    :temporary="isMobile"
+  >
     <LogoERPVue class="py-14" />
 
     <v-list dense>
@@ -12,15 +17,15 @@
         <v-list-item
           :class="[
             'my-1 ',
-            $route.path === item.path ? 'bg-blue-100 text-white border-l-4 border-blue-500' : 'hover:bg-gray-100'
+            $route.path.match(/^\/[^/]+/)[0] === item.path ? 'bg-blue-100 text-white border-l-4 border-blue-500' : 'hover:bg-gray-100'
           ]"
         >
           <v-list-item-icon class="mr-2">
-            <v-icon :color="$route.path === item.path ? 'blue darken-4' : 'black'">
+            <v-icon :color="$route.path.match(/^\/[^/]+/)[0] === item.path ? 'blue darken-4' : 'black'">
               {{ item.icon }}
             </v-icon>
           </v-list-item-icon>
-          <v-list-item-title :class="$route.path === item.path ? 'text-blue-800' : 'text-black'">
+          <v-list-item-title :class="$route.path.match(/^\/[^/]+/)[0] === item.path ? 'text-blue-800' : 'text-black'">
             {{ item.title }}
           </v-list-item-title>
         </v-list-item>
@@ -37,24 +42,42 @@ const menuItems = [
   { title: 'Staff', icon: 'mdi-account-group', path: '/staff' },
   { title: 'Payment Voucher', icon: 'mdi-cash', path: '/vouchers' },
   { title: 'Payroll', icon: 'mdi-currency-usd', path: '/payroll' },
-  { title: 'Memo', icon: 'mdi-file-document-outline', path: '/memos' },
+  { title: 'Memo', icon: 'mdi-file-document-outline', path: '/memo' },
   { title: 'Circulars', icon: 'mdi-email', path: '/circulars' },
   { title: 'Maintenance', icon: 'mdi-wrench', path: '/maintenance' },
   { title: 'Logistics', icon: 'mdi-truck-delivery', path: '/logistics' },
   { title: 'Office Budget', icon: 'mdi-piggy-bank', path: '/budget' },
-  { title: 'Stocks and Inventory', icon: 'mdi-warehouse', path: '/stocks' },
+  { title: 'Stocks and Inventory', icon: 'mdi-format-list-checkbox', path: '/stock-inventory' },
   { title: 'Notifications', icon: 'mdi-bell', path: '/notifications' },
-  { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' },
-  { title: 'Procurements', icon: 'mdi-cart-outline', path: '/procurements' }
+  { title: 'Capacity Building', icon: 'mdi-school-outline', path: '/capacity' }
 ]
 
 export default {
+  props: {
+    isMobile: {
+      type: Boolean,
+      required: true
+    },
+    drawer: {
+      type: Boolean,
+      required: true
+    }
+  },
   components: {
     LogoERPVue
   },
   data () {
     return {
-      menuItems
+      menuItems,
+      localDrawer: this.drawer
+    }
+  },
+  watch: {
+    drawer (val) {
+      this.localDrawer = val
+    },
+    localDrawer (val) {
+      this.$emit('update:drawer', val)
     }
   }
 }

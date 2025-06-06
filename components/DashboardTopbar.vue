@@ -175,6 +175,11 @@ export default {
           icon: 'mdi-notebook-edit',
           title: 'Memo Details',
           subtitle: 'Create and send memos to designated offices.'
+        },
+        'stock-inventory': {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Stocks and Inventory',
+          subtitle: 'Update stoke and inventory table.'
         }
       }
 

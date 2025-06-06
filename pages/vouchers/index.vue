@@ -88,7 +88,7 @@
                   <v-icon small class="mr-2">
                     mdi-pencil
                   </v-icon>
-                  <v-list-item-title>Edit</v-list-item-title>
+                  <v-list-item-title>Details</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="openDialog('delete', item)">
                   <v-icon small class="mr-2">

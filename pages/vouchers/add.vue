@@ -84,11 +84,6 @@
               </v-row>
             </v-col>
             <v-col cols="12">
-              <span>
-                Net amount in words:{{ '--' }}
-              </span>
-            </v-col>
-            <v-col cols="12">
               <h1 class="font-bold text-lg">
                 Beneficiary Payment Details
               </h1>

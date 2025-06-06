@@ -30,15 +30,43 @@
                   id="title"
                   v-model="salary.title"
                   class="w-full p-2 border border-gray-300 rounded-md border-solid text-left block text-sm font-medium text-gray-700"
+                  required
                 >
                   <option value="">
                     Select an Option
                   </option>
+                  <option value="General Manager">
+                    General Manager
+                  </option>
+                  <option value="Executive Director">
+                    Executive Director
+                  </option>
+                  <option value="General Manager">
+                    General Manager
+                  </option>
+                  <option value="Deputy General Manager">
+                    Deputy General Manager
+                  </option>
+                  <option value="Asst. General Manager">
+                    Asst. General Manager
+                  </option>
+                  <option value="Principal Manager">
+                    Principal Manager
+                  </option>
+                  <option value="Senior Manager">
+                    Senior Manager
+                  </option>
                   <option value="Manager">
                     Manager
                   </option>
-                  <option value="Developer">
-                    Deveoloper
+                  <option value="Deputy Manager">
+                    Deputy Manager
+                  </option>
+                  <option value="Asst. Manager">
+                    Asst. Manager
+                  </option>
+                  <option value="Snr. Executive Officer">
+                    Snr. Executive Officer
                   </option>
                 </select>
               </div> <!-- .title -->
@@ -49,15 +77,22 @@
                   id="level"
                   v-model="salary.level"
                   class="w-full p-2 border border-gray-300 rounded-md border-solid text-left block text-sm font-medium text-gray-700"
+                  required
                 >
                   <option value="">
                     Select an Option
                   </option>
-                  <option value="Junior">
-                    Junior
+                  <option value="MD/CEO">
+                    MD/CEO
                   </option>
-                  <option value="Senior">
-                    Senior
+                  <option value="ED">
+                    ED
+                  </option>
+                  <option value="GM">
+                    GM
+                  </option>
+                  <option value="DGM">
+                    DGM
                   </option>
                 </select>
               </div> <!-- .Level -->
@@ -66,7 +101,7 @@
                 <label for="basicSalary" class="text-left block text-sm font-medium text-gray-700">Basic Salary</label>
                 <input
                   id="basicSalary"
-                  v-model="salary.BasicSalary"
+                  v-model="salary.basicSalary"
                   type="number"
                   min="0"
                   name="basicSalary"
@@ -82,8 +117,9 @@
                 <label for="allowance" class="text-left block text-sm font-medium text-gray-700">Allowance</label>
                 <input
                   id="allowance"
-                  v-model="salary.Allowance"
-                  type="text"
+                  v-model="salary.allowance"
+                  type="number"
+                  min="0"
                   name="allowance"
                   placeholder="Enter amount in Naira"
                   class="w-full p-2 border border-gray-300 rounded-md border-solid"
@@ -95,8 +131,9 @@
                 <label for="grossSalary" class="text-left block text-sm font-medium text-gray-700">Gross Salary</label>
                 <input
                   id="grossSalary"
-                  v-model="salary.GrossSalary"
-                  type="text"
+                  v-model="salary.grossSalary"
+                  type="number"
+                  min="0"
                   name="grossSalary"
                   placeholder="Enter amount in Naira"
                   class="w-full p-2 border border-gray-300 rounded-md border-solid"
@@ -105,12 +142,13 @@
               </div> <!-- .Allowance-->
 
               <div class="flex flex-col mb-8">
-                <label for="deducions" class="text-left block text-sm font-medium text-gray-700">Deducions</label>
+                <label for="deducion" class="text-left block text-sm font-medium text-gray-700">Deducions</label>
                 <input
                   id="deducions"
-                  v-model="salary.Deduction"
-                  type="text"
-                  name="deducions"
+                  v-model="salary.deduction"
+                  type="number"
+                  min="0"
+                  name="deducion"
                   placeholder="Enter amount in Naira"
                   class="w-full p-2 border border-gray-300 rounded-md border-solid"
                   required
@@ -123,12 +161,14 @@
                 <label for="netSalary" class="text-left block text-sm font-medium text-gray-700">Net Salary</label>
                 <input
                   id="netSalary"
-                  v-model="salary.NetSalary"
-                  type="text"
+                  v-model="salary.netSalary"
+                  type="number"
+                  min="0"
                   name="netSalary"
                   placeholder="Enter amount in Naira"
                   class="w-full p-2 border border-gray-300 rounded-md border-solid"
                   required
+                  disabled
                 >
               </div> <!-- .Allowance-->
 
@@ -139,7 +179,7 @@
                   class="w-full h-11 py-3 text-xs bg-gradient-to-r from-primario to-secundario rounded-lg
                    hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out cursor-pointer"
                   style="color: white !important"
-                  @click="navegateToCreate"
+                  @click="submitForm"
                 >
               </div>
             </div> <!-- .grid tercera fila-->
@@ -154,6 +194,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
+
 export default {
   name: 'PayrollCreate',
   data () {
@@ -161,11 +203,11 @@ export default {
       salary: {
         title: '',
         level: '',
-        BasicSalary: '',
-        Allowance: '',
-        GrossSalary: '',
-        Deduction: '',
-        NetSalary: ''
+        basicSalary: null,
+        allowance: null,
+        grossSalary: null,
+        deduction: null,
+        netSalary: null
       },
       CurrenYear: new Date().getFullYear()
     }
@@ -174,8 +216,41 @@ export default {
     navegateToBack () {
       this.$router.push({ path: '/payroll' })
     },
-    navegateToCreate () {
-      console.log('Dsde Backend')
+    async submitForm () {
+      // console.log('Desde API Backend')
+      try {
+        const response = await this.$axios.post('/salary-definitions/create',
+          this.salary
+        )
+        if (response.status === 201) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Salary Definition created successfully'
+          })
+          // *** Emitir un evento para el componente padre ***
+          this.$emit('salaryCreated') // * Emitimos un evento llamado 'salaryCreated'
+          this.navegateToBack()
+        }
+        this.clearForm()
+      } catch (e) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'An error occurred while creating the salary definition.'
+        })
+      }
+    },
+    clearForm () {
+      this.salary = {
+        title: '',
+        level: '',
+        basicSalary: null,
+        allowance: null,
+        grossSalary: null,
+        deduction: null,
+        netSalary: null
+      }
     }
   }
 }

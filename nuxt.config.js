@@ -52,14 +52,14 @@ export default {
   vuetify: {
     // ✅ CONFIGURACIÓN DE ICONOS
     defaultAssets: {
-      icons: 'mdi', // Habilita Material Design Icons automáticamente
+      icons: 'mdi' // Habilita Material Design Icons automáticamente
     },
     icons: {
-      iconfont: 'mdi', // Usa Material Design Icons
+      iconfont: 'mdi' // Usa Material Design Icons
     },
     theme: {
-      dark: false,
-    },
+      dark: false
+    }
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

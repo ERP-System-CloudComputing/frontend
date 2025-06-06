@@ -13,7 +13,7 @@
           </div>
           <div class="p-2 flex items-center justify-center rounded-full icono" :class="card.iconBg">
             <v-icon :color="card.iconColor" size="30">
-              mdi-basket-check
+              mdi-format-list-bulleted
             </v-icon>
           </div>
         </div>

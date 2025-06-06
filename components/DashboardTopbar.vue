@@ -180,6 +180,11 @@ export default {
           icon: 'mdi-format-list-bulleted',
           title: 'Stocks and Inventory',
           subtitle: 'Update stoke and inventory table.'
+        },
+        'stock-create': {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Update Stock',
+          subtitle: 'Add new item to stocks.'
         }
       }
 

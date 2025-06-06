@@ -13,7 +13,7 @@
           </div>
           <div class="p-2 flex items-center justify-center rounded-full icono" :class="card.iconBg">
             <v-icon :color="card.iconColor" size="30">
-              mdi-basket-check
+              mdi-format-list-bulleted
             </v-icon>
           </div>
         </div>
@@ -34,25 +34,25 @@ export default {
     return {
       cards: [
         {
-          value: this.infoLogistics.total,
+          value: 0,
           label: 'Total request made',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: this.infoLogistics.costTotal,
+          value: 0,
           label: 'Total cost incurred',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: this.infoLogistics.pending,
+          value: 0,
           label: 'Pending request',
           iconBg: 'bg-yellow-100',
           iconColor: 'orange'
         },
         {
-          value: this.infoLogistics.approved,
+          value: 0,
           label: 'Approved request',
           iconBg: 'bg-green-100',
           iconColor: 'green'

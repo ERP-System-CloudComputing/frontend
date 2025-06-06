@@ -22,7 +22,7 @@
         <v-data-table
           :headers="headers"
           :items="logisticsRequests"
-          class="elevation-1 rounded-lg overflow-hidden"
+          class="elevation-0 rounded-lg overflow-hidden"
           hide-default-footer
           item-value="id"
         >

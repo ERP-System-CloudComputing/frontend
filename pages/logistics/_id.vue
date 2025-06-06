@@ -75,11 +75,10 @@
               <v-col cols="12" md="4">
                 <label class="text-sm font-normal text-black">Remarks</label>
                 <v-text-field
-                  v-model="logistics.remarks"
+                  v-model="dataSubmit.remarks"
                   placeholder="Enter remarks"
                   outlined
                   dense
-                  :rules="[rules.required]"
                 />
               </v-col>
               <v-col cols="12" md="4">
@@ -110,7 +109,7 @@ export default {
       idLogistics: null,
       logistics: {},
       actions: [
-        { text: 'Approve', value: 'APPROVE' },
+        { text: 'Approve', value: 'APPROVED' },
         { text: 'Reject', value: 'REJECT' },
         { text: 'Pending', value: 'PENDING' }
       ],
@@ -153,7 +152,7 @@ export default {
     async submitAction () {
       if (this.$refs.formSubmit.validate()) {
         try {
-          const response = await this.$axios.post(`/logistics/action/${this.idLogistics}`, this.dataSubmit)
+          const response = await this.$axios.put(`/logistics/action/${this.idLogistics}`, this.dataSubmit)
           if (response.status === 200) {
             Swal.fire({
               icon: 'success',

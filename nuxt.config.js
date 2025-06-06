@@ -90,7 +90,8 @@ export default {
   vuetify: {
     // ✅ CONFIGURACIÓN DE ICONOS
     defaultAssets: {
-      icons: 'mdi' // Habilita Material Design Icons automáticamente
+      icons: 'mdi', // Habilita Material Design Icons automáticamente
+      font: true
     },
     icons: {
       iconfont: 'mdi' // Usa Material Design Icons

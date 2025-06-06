@@ -42,7 +42,7 @@ const menuItems = [
   { title: 'Staff', icon: 'mdi-account-group', path: '/staff' },
   { title: 'Payment Voucher', icon: 'mdi-cash', path: '/vouchers' },
   { title: 'Payroll', icon: 'mdi-currency-usd', path: '/payroll' },
-  { title: 'Memo', icon: 'mdi-file-document-outline', path: '/memos' },
+  { title: 'Memo', icon: 'mdi-file-document-outline', path: '/memo' },
   { title: 'Circulars', icon: 'mdi-email', path: '/circulars' },
   { title: 'Maintenance', icon: 'mdi-wrench', path: '/maintenance' },
   { title: 'Logistics', icon: 'mdi-truck-delivery', path: '/logistics' },

@@ -160,6 +160,16 @@ export default {
           icon: 'mdi-truck',
           title: 'Logistics Request',
           subtitle: 'Make and send logistics request.'
+        },
+        memo: {
+          icon: 'mdi-notebook-edit',
+          title: 'Memo',
+          subtitle: 'Create and send memos to designated offices.'
+        },
+        'memo-create': {
+          icon: 'mdi-notebook-edit',
+          title: 'Create Memo',
+          subtitle: 'Create and send memos to designated offices.'
         }
       }
 

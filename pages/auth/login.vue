@@ -93,6 +93,7 @@ import Swal from 'sweetalert2'
 
 export default {
   components: { FontAwesomeIcon },
+  middleware: 'isAuth',
   data () {
     return {
       showPassword: false,
@@ -115,34 +116,50 @@ export default {
         text: 'Your session has expired. Please log in again.'
       })
     }
+    // * Cargamos el estado de rememberMe si existe en localStorage:
+    const storedRememberMe = localStorage.getItem('rememberMe')
+    if (storedRememberMe !== null) {
+      this.user.rememberMe = storedRememberMe === 'true'
+    }
+
+    const rememberMeOn = localStorage.getItem('rememberMe') === 'true'
+    if (rememberMeOn) {
+      this.$router.push('/dashboard')
+    }
   },
   methods: {
     async login () {
+      // * Guardamos el estado de rememberMe antes de llamar a la API:
+      localStorage.setItem('rememberMe', this.user.rememberMe.toString())
       try {
-        const response = await this.$axios.$post('/staff/login', {
-          personalEmail: this.user.personalEmail,
-          password: this.user.password,
-          rememberMe: this.user.rememberMe
-        }, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          withCredentials: true // * Para las Cookies HTTP-only
-        })
+        // await this.$axios.$post('/staff/login', {
+        //   personalEmail: this.user.personalEmail,
+        //   password: this.user.password,
+        //   rememberMe: this.user.rememberMe
+        // }, {
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   withCredentials: true // * Para las Cookies HTTP-only y se envíen y reciban las cookies
+        // })
 
-        if (this.user.rememberMe) {
-          // await localStorage.setItem('auth.accessToken', response.accessToken)
-          await this.$auth.setUserToken(response.accessToken) // * Guardamos el token en el almacenamiento local de Nuxt Auth
-        } else {
-          // * Almacenamos el token en sessionStorage de la forma de Nuxt Auth:
-          await this.$auth.setUserToken(response.accessToken)
-          // await sessionStorage.setItem('auth.accessToken', response.accessToken)
+        const response = await this.$auth.loginWith('local', {
+          data: this.user
+        })
+        if (response.status === 200) {
+          this.$router.push('/dashboard')
         }
 
-        // * Guardamos el estado de remembeMe
-        localStorage.setItem('rememberMe', this.user.rememberMe.toString())
+        // if (this.user.rememberMe) {
+        //   // await localStorage.setItem('auth.accessToken', response.accessToken)
+        //   await this.$auth.setUserToken(response.accessToken) // * Guardamos el token en el almacenamiento local de Nuxt Auth
+        // } else {
+        //   // * Almacenamos el token en sessionStorage de la forma de Nuxt Auth:
+        //   await this.$auth.setUserToken(response.accessToken) // * // Esto puede ser redundante si ya está en las cookies
+        //   // await sessionStorage.setItem('auth.accessToken', response.accessToken)
+        // }
 
-        this.$router.push('/dashboard')
+        // this.$router.push('/dashboard')
       } catch (error) {
         this.user.personalEmail = ''
         this.user.password = ''
@@ -150,10 +167,13 @@ export default {
 
         // alert(error.response?.data?.message || 'Error al iniciar sesión')
         this.$auth.reset() // * Limpiar el estado de autenticación local
-        localStorage.removeItem('auth._token.local')
-        localStorage.removeItem('rememberMe')
-        sessionStorage.removeItem('auth.accessToken')
+        // localStorage.removeItem('auth._token.local')
+        localStorage.removeItem('auth._tokenlocal')
+        // localStorage.removeItem('auth._refreshToken.local') // Limpiar también el refresh token
         localStorage.removeItem('auth._token_expiration.local')
+        localStorage.removeItem('rememberMe')
+        sessionStorage.removeItem('auth.accessToken') // Limpiar sessionStorage por si acaso
+        localStorage.removeItem('rememberMe') // Limpiar el estado de rememberMe
 
         let errorMessage = 'An error occurred during login'
 

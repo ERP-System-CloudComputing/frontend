@@ -142,14 +142,14 @@ export default {
     async submitAction () {
       if (this.$refs.formSubmit.validate()) {
         try {
-          const response = await this.$axios.put(`/logistics/action/${this.idLogistics}`, this.dataSubmit)
+          const response = await this.$axios.put(`/memo/action/${this.idMemo}`, this.dataSubmit)
           if (response.status === 200) {
             Swal.fire({
               icon: 'success',
               title: 'Exito',
-              text: 'Acción actualizada correctamente.'
+              text: 'Memo actualizado correctamente.'
             }).then(() => {
-              this.$router.push('/logistics')
+              this.$router.push('/memo')
             })
           } else {
             Swal.fire({

@@ -38,6 +38,7 @@
                 height="58"
                 :rules="[required('Type')]"
                 :items="selectTrainType"
+                @input="typeSelectTeam()"
               />
             </v-col>
             <v-col cols="12" md="4">
@@ -49,7 +50,7 @@
                 flat
                 height="58"
                 :rules="[required('Duration')]"
-                :items="[1,2,3,4,5,6,7,8,9]"
+                :items="selectTrainDuration"
               />
             </v-col>
           </v-row>
@@ -80,15 +81,49 @@
             </v-col>
             <v-col cols="12" md="4">
               <span>Staff to be trained</span>
-              <v-select
-                v-model="formData.trainStaff"
-                placeholder="Select names"
-                outlined
-                flat
-                height="58"
-                :rules="[required('Staff')]"
-                :items="selectTrainStaff"
-              />
+              <div v-if="typeTeam === 'Individual'">
+                <v-select
+                  v-model="selectFormStaffs.staffID"
+                  placeholder="Select names"
+                  outlined
+                  flat
+                  height="58"
+                  :rules="[required('Staff')]"
+                  :items="selectTrainStaff"
+                />
+              </div>
+              <div v-else>
+                <v-select
+                  v-model="selectFormStaffs.staffID"
+                  placeholder="Select names"
+                  outlined
+                  flat
+                  height="58"
+                  multiple
+                  :rules="[required('Staff')]"
+                  :items="selectTrainStaff2"
+                >
+                  <template #selection="{ item, index }">
+                    <v-chip
+                      v-if="index < 2"
+                      :key="index"
+                      small
+                      class="ma-1"
+                      color="gray"
+                      text-color="black"
+                      :rules="[required('Staff')]"
+                    >
+                      {{ item }}
+                    </v-chip>
+                    <span
+                      v-else-if="index === 2"
+                      class="text-gray-400  text-caption align-self-center"
+                    >
+                      (+{{ selectFormStaffs.length - 2 }} others)
+                    </span>
+                  </template>
+                </v-select>
+              </div>
             </v-col>
           </v-row>
         </v-form>
@@ -127,13 +162,33 @@ export default {
       selectTrainStaff: [
         'Fucking Mario'
       ],
+      selectTrainStaff2: [
+        'Fucking Mario2',
+        'Fucking Mario3',
+        'Fucking Mario4',
+        'Fucking Mario5'
+      ],
+      selectTrainDuration: [
+        '3 days',
+        '5 days',
+        '1 week',
+        '2 weeks',
+        '1 month',
+        '3 months',
+        '6 months'
+      ],
+      typeTeam: '',
       formData: {
         trainDescription: '',
         trainType: '',
         trainDuration: '',
         trainDate: '',
         trainMode: '',
-        trainStaff: ''
+        trainStatus: ''
+      },
+      selectAllStaff: [],
+      selectFormStaffs: {
+        staffID: ''
       },
       selectDate: '',
       formValidar: false
@@ -142,6 +197,12 @@ export default {
   methods: {
     goToAll () {
       this.$router.push('/capacity')
+    },
+    goToUpdate () {
+      this.$router.push('/capacity/update')
+    },
+    typeSelectTeam () {
+      this.typeTeam = this.formData.trainType
     },
     required (campo, min) {
       return (v) => {
@@ -156,20 +217,33 @@ export default {
     validForm () {
       if (this.$refs.form.validate()) {
         this.formData.trainDate = this.newDate(this.selectDate)
+        this.createTeam()
         this.createCapacity()
       } else {
         alert('Complete all fields')
       }
     },
+    createTeam () {
+      if (this.typeTeam === 'Team' && Array.isArray(this.selectFormStaffs.staffID)) {
+        const newStaffs = this.selectFormStaffs.staffID.map(staff => ({ staffID: staff }))
+        this.selectAllStaff.push(...newStaffs)
+      } else if (this.typeTeam === 'Individual' && this.selectFormStaffs.staffID) {
+        this.selectAllStaff.push({ staffID: this.selectFormStaffs.staffID })
+      }
+      this.selectFormStaffs = { staffID: this.typeTeam === 'Team' ? [] : '' }
+    },
     async createCapacity () {
       try {
-        console.log(this.formData)
-        await this.$axios.post('/capacity/create', this.formData)
+        const capacityFull = {
+          capacity: this.formData,
+          dataList: this.selectAllStaff
+        }
+        await this.$axios.post('/capacity/create', capacityFull)
         alert('Success')
         this.$router.push('/capacity')
       } catch (error) {
         // console.log(error)
-        const errorMessage = error.message || 'Error Maintenance'
+        const errorMessage = error.message || 'Error Capacity'
         this.$store.dispatch('alert/triggerAlert', {
           message: errorMessage,
           type: 'error'

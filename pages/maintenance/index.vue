@@ -32,10 +32,8 @@
       </v-col>
 
       <v-col cols="12" sm="6">
-        <v-card
-          class="pa-4"
-          elevation="2"
-          style="height: 270px; overflow-y: auto;"
+        <div
+          class="pa-4 h-72 overflow-y-auto border-l-2"
         >
           <div v-if="allMaintenances.length === 0">
             <p class="text-center font-bold">
@@ -55,7 +53,7 @@
               </div>
             </div>
           </div>
-        </v-card>
+        </div>
       </v-col>
     </v-row>
     <v-dialog

@@ -175,6 +175,11 @@ export default {
           icon: 'mdi-human-capacity-increase',
           title: 'Capacity Building',
           subtitle: 'Create and submit request for staff training'
+        },
+        'capacity-update': {
+          icon: 'mdi-human-capacity-increase',
+          title: 'Capacity Building',
+          subtitle: 'Create and submit request for staff training'
         }
       }
 

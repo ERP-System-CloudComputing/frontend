@@ -444,7 +444,6 @@ export default {
     },
     createBuy () {
       this.formBuyDataList.push({ ...this.formBuyData })
-      //  console.log(this.formBuyDataList)
       this.confirmDialog = false
     },
     validForm (reform, forms) {

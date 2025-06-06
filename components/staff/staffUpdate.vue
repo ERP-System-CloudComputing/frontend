@@ -257,6 +257,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 export default {
   data () {
     return {
@@ -387,7 +388,11 @@ export default {
     async updateStaff () {
       try {
         await this.$axios.put(`/staff/update/${this.formData.id}`, this.formData)
-        alert('Success')
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Staff Updated'
+        })
         this.$router.push('/staff')
       } catch (error) {
         const errorMessage = error.message || 'Error Staff'

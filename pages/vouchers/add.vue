@@ -298,6 +298,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 export default {
   layout: 'principal',
   data () {
@@ -464,7 +465,11 @@ export default {
           dataList: this.formBuyDataList
         }
         await this.$axios.post('/vouchers/create', voucherFull)
-        alert('Success')
+        Swal.fire({
+          icon: 'success',
+          title: 'Success',
+          text: 'Staff Updated'
+        })
         this.$router.push('/vouchers')
       } catch (error) {
         console.log(error)

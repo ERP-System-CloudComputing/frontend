@@ -89,7 +89,7 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 
 export default {
   components: { FontAwesomeIcon },
@@ -128,7 +128,6 @@ export default {
     }
   },
   methods: {
-  /*
     async login () {
       // * Guardamos el estado de rememberMe antes de llamar a la API:
       localStorage.setItem('rememberMe', this.user.rememberMe.toString())
@@ -195,7 +194,6 @@ export default {
         })
       }
     }
-    */
   }
 }
 </script>

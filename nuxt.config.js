@@ -50,13 +50,6 @@ export default {
     '@nuxtjs/tailwindcss'
   ],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    '~/plugins/fortawesome.js',
-    '~/plugins/vxe-table.js'
-    // '~/plugins/tokensExpired.js' // * YA lo maneja interna,ente @nuxtjs/auth-next
-  ],
-
   tailwindcss: {
     configPath: '~/tailwind.config.js'
   },

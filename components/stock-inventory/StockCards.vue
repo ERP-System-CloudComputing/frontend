@@ -25,7 +25,7 @@
 <script>
 export default {
   props: {
-    infoLogistics: {
+    infoStock: {
       type: Object,
       default: () => ({})
     }
@@ -34,26 +34,26 @@ export default {
     return {
       cards: [
         {
-          value: 0,
-          label: 'Total request made',
+          value: 5,
+          label: 'Categories',
           iconBg: 'bg-blue-100',
           iconColor: 'blue'
         },
         {
-          value: 0,
-          label: 'Total cost incurred',
+          value: this.infoStock.totalItems || 0,
+          label: 'Total items',
           iconBg: 'bg-purple-100',
           iconColor: 'purple'
         },
         {
-          value: 0,
-          label: 'Pending request',
+          value: this.infoStock.totalItemCost || 0,
+          label: 'Total item cost',
           iconBg: 'bg-yellow-100',
           iconColor: 'orange'
         },
         {
-          value: 0,
-          label: 'Approved request',
+          value: this.infoStock.itemsLowInStock || 0,
+          label: 'Items low in stock',
           iconBg: 'bg-green-100',
           iconColor: 'green'
         }

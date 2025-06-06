@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-4">
-      <nuxt-link to="/circulars" class="text-blue-500 font-semibold text-sm">
+      <nuxt-link to="/stock-inventory" class="text-blue-500 font-semibold text-sm">
         <v-icon left color="#1976d2">
           mdi-chevron-left
         </v-icon>

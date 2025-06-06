@@ -29,7 +29,7 @@
       <div v-if="activeTab === 'stocks'">
 
         <!-- Statistics Cards -->
-        <StockCardsVue />
+        <StockCardsVue v-if="infoStock.totalItems" :info-stock="infoStock"/>
 
         <!-- Update Stock Section -->
         <div class="flex justify-between items-center flex-col sm:flex-row mt-6 bg-white py-9 px-5 rounded-2xl shadow-sm">
@@ -74,7 +74,10 @@
                 <tr v-for="item in stockItems" :key="item.id" class="hover:bg-gray-50">
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.sn }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                    <div v-if="item.image" class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                      <img :src="item.image" alt="Product Image" class="w-full h-full object-cover rounded">
+                    </div>
+                    <div v-else class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
                       <v-icon
                         class="w-6 h-6 text-gray-600"
                         :color="'gray'"
@@ -85,11 +88,11 @@
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.name }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.productId }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.id }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.category }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.qtyPurchased }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.unitPrice }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.totalAmount }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.quantity }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(item.unitPrice) }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatCurrency(item.totalCost) }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.inStock }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.supplier }}</td>
                   <td class="px-6 py-4 whitespace-nowrap">
@@ -160,7 +163,7 @@
                     </div>
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.name }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.productId }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.id }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.category }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.qtyPurchased }}</td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.unitPrice }}</td>
@@ -194,92 +197,7 @@ export default {
   data () {
     return {
       activeTab: 'stocks',
-      stockItems: [
-        {
-          id: 1,
-          sn: '01',
-          icon: 'mdi-pen',
-          name: 'Pen',
-          productId: '45656787',
-          category: 'Stationaries',
-          qtyPurchased: '50pcs',
-          unitPrice: '₦100.00',
-          totalAmount: '₦5,000.00',
-          inStock: '40pcs',
-          supplier: "Big Ben's Store",
-          status: 'In stock'
-        },
-        {
-          id: 2,
-          sn: '02',
-          icon: 'mdi-paper',
-          name: 'A4 Paper',
-          productId: '69956787',
-          category: 'Stationaries',
-          qtyPurchased: '20pcs',
-          unitPrice: '₦3,000.00',
-          totalAmount: '₦60,000.00',
-          inStock: '0pcs',
-          supplier: "Big Ben's Store",
-          status: 'Out of Stock'
-        },
-        {
-          id: 3,
-          sn: '03',
-          icon: 'mdi-bottle-soda',
-          name: 'Liquid wash',
-          productId: '36426787',
-          category: 'Detergent',
-          qtyPurchased: '35pcs',
-          unitPrice: '₦5000.00',
-          totalAmount: '₦175,000.00',
-          inStock: '10pcs',
-          supplier: 'Quality wash',
-          status: 'Low in stock'
-        },
-        {
-          id: 4,
-          sn: '04',
-          icon: 'mdi-paperclip',
-          name: 'Paper clips',
-          productId: '45656787',
-          category: 'Stationaries',
-          qtyPurchased: '45pcs',
-          unitPrice: '₦200.00',
-          totalAmount: '₦9,000.00',
-          inStock: '10pcs',
-          supplier: "Big Ben's Store",
-          status: 'Low in Stock'
-        },
-        {
-          id: 5,
-          sn: '05',
-          icon: 'mdi-notebook',
-          name: 'Notepads',
-          productId: '36426787',
-          category: 'Stationaries',
-          qtyPurchased: '100pcs',
-          unitPrice: '₦2,000.00',
-          totalAmount: '₦200,000.00',
-          inStock: '45pcs',
-          supplier: "Big Ben's Store",
-          status: 'In Stock'
-        },
-        {
-          id: 6,
-          sn: '06',
-          icon: 'mdi-air-freshener',
-          name: 'Air freshner',
-          productId: '36420021',
-          category: 'Detergent',
-          qtyPurchased: '10pcs',
-          unitPrice: '₦1,000.00',
-          totalAmount: '₦10,000.00',
-          inStock: '0pcs',
-          supplier: 'Quality wash',
-          status: 'Out of Stock'
-        }
-      ],
+      stockItems: [],
       inventoryItems: [
         {
           id: 1,
@@ -359,18 +277,31 @@ export default {
           supplier: "Big Ben's Store",
           status: 'All functioning'
         }
-      ]
+      ],
+      infoStock: {
+        totalCategories: 5,
+        totalItems: 0,
+        totalItemCost: 0,
+        itemsLowInStock: 0
+      }
     }
   },
+  async mounted () {
+    await this.getStockItems()
+  },
   methods: {
+    formatCurrency (value) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'MXN'
+      }).format(value)
+    },
     getStatusClass (status) {
       switch (status) {
-        case 'In stock':
         case 'In Stock':
           return 'bg-green-100 text-green-800'
         case 'Out of Stock':
           return 'bg-red-100 text-red-800'
-        case 'Low in stock':
         case 'Low in Stock':
           return 'bg-yellow-100 text-yellow-800'
         default:
@@ -384,6 +315,37 @@ export default {
         return 'bg-yellow-100 text-yellow-800'
       }
       return 'bg-gray-100 text-gray-800'
+    },
+    setStatus (inStock) {
+      if (inStock === 0) {
+        return 'Out of Stock'
+      } else if (inStock < 10) {
+        return 'Low in Stock'
+      } else {
+        return 'In Stock'
+      }
+    },
+    async getStockItems () {
+      try {
+        const response = await this.$axios.get('/stock/getAll')
+        if (response.status === 200) {
+          this.stockItems = response.data.map((item, index) => ({
+            ...item,
+            sn: String(index + 1).padStart(2, '0'),
+            status: this.setStatus(item.inStock)
+          }))
+
+          this.infoStock.totalItems = this.stockItems.length
+          this.infoStock.totalItemCost = this.formatCurrency(
+            this.stockItems.reduce((total, item) => total + (item.unitPrice * item.quantity), 0)
+          )
+          this.infoStock.itemsLowInStock = this.stockItems.filter(item => item.inStock < 10).length
+        } else {
+          console.error('Failed to fetch stock items:', response.statusText)
+        }
+      } catch (error) {
+        console.error('Error fetching stock items:', error)
+      }
     }
   }
 }

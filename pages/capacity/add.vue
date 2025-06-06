@@ -160,13 +160,14 @@ export default {
         'Online'
       ],
       selectTrainStaff: [
-        'Fucking Mario'
+        'Antonio Castillo',
+        'Mario Cobian',
+        'Luis Alvarez'
       ],
       selectTrainStaff2: [
-        'Fucking Mario2',
-        'Fucking Mario3',
-        'Fucking Mario4',
-        'Fucking Mario5'
+        'Antonio Castillo',
+        'Mario Cobian',
+        'Luis Alvarez'
       ],
       selectTrainDuration: [
         '3 days',

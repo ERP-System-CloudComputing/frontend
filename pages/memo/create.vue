@@ -10,7 +10,9 @@
     </div>
 
     <v-card flat rounded="lg">
-      <v-card-title class="font-extrabold text-xl">Create Memo</v-card-title>
+      <v-card-title class="font-extrabold text-xl">
+        Create Memo
+      </v-card-title>
 
       <v-card-text>
         <v-form ref="form" v-model="isFormValid">
@@ -57,7 +59,7 @@
                 placeholder="Select option"
               />
             </v-col>
-            <v-col md="8"></v-col>
+            <v-col md="8" />
             <v-col cols="12" md="4">
               <label class="text-sm font-normal text-black">Date</label>
               <v-text-field
@@ -86,8 +88,8 @@
                 :items="['PDF', 'Image', 'Document']"
                 outlined
                 dense
-                :rules="[rules.selectOne]"
                 placeholder="Select option"
+                :disabled="newMemo.haveAttachment === 'No'"
               />
             </v-col>
             <v-col cols="12" md="8">
@@ -103,16 +105,25 @@
           </v-row>
 
           <div class="flex gap-5 flex-col md:flex-row">
+            <input
+              id="file-input"
+              type="file"
+              style="display: none"
+              @change="e => handleFileUpload(e)"
+            />
             <v-btn
               color="primary"
               class="w-full md:max-w-xs px-8 py-3 bg-gradient-to-r from-primario to-secundario text-white rounded-lg
                     hover:opacity-90 duration-500 transform hover:scale-105 ease-in-out color-white"
+              :disabled="newMemo.haveAttachment === 'No' || newMemo.attachment !== ''"
+              @click="triggerFileInput()"
             >
               Attache Payment Voucher
             </v-btn>
             <!-- Boton con el texto azul, bg blanco y borde azul y redondeado -->
             <button
               class="h-9 p-px bg-gradient-to-r from-primario to-secundario rounded-lg hover:opacity-90 duration-500 transform hover:scale-110 ease-in-out hover:shadow-lg"
+              @click.prevent="saveMemo"
             >
               <div class="bg-white rounded-lg h-full w-full flex items-center justify-center text-blue-500 px-9 py-3">
                 Save
@@ -126,7 +137,7 @@
 </template>
 
 <script>
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
 
 export default {
   layout: 'principal',
@@ -142,16 +153,16 @@ export default {
         'All Staff'
       ],
       actions: [
-        'Approve',
-        'Reject',
-        'Review',
-        'Forward',
-        'Archive'
+        'APPROVED',
+        'REJECTED',
+        'REVIEW',
+        'FORWARD',
+        'ARCHIVED'
       ],
       rules: {
         required: value => !!value || 'El campo es obligatorio',
-        positiveAmount: value => (value > 0) || 'El monto debe ser positivo'
-        // selectOne: value => (value.length > 0) || 'Debe seleccionar al menos una opción'
+        positiveAmount: value => (value > 0) || 'El monto debe ser positivo',
+        selectOne: value => (value.length > 0) || 'Debe seleccionar al menos una opción'
       },
       newMemo: {
         title: '',
@@ -167,6 +178,83 @@ export default {
     }
   },
   methods: {
+    saveMemo () {
+      if (this.$refs.form.validate()) {
+        if (this.newMemo.haveAttachment === 'Yes') {
+          if (!this.newMemo.typeAttachment) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Por favor, seleccione el tipo de adjunto.'
+            })
+            return
+          }
+          if (!this.newMemo.attachment) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Por favor, adjunte un archivo.'
+            })
+            return
+          }
+        }
+
+        try {
+          console.log('Datos del nuevo memo:', this.newMemo)
+        } catch (error) {
+          console.error('Error al crear el memo:', error)
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo crear el memo. Por favor, inténtelo de nuevo más tarde.'
+          })
+        }
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Por favor, completa todos los campos obligatorios.'
+        })
+      }
+    },
+    triggerFileInput () {
+      document.getElementById('file-input').click()
+    },
+    async handleFileUpload (event) {
+      const file = event.target.files[0]
+      if (file) {
+        if (file.type !== 'application/pdf') {
+          console.warn('Solo se permiten archivos PDF')
+          return
+        }
+
+        if (file.size > 5 * 1024 * 1024) { // 5 MB
+          console.warn('El archivo es demasiado grande. El tamaño máximo permitido es de 5 MB.')
+          return
+        }
+
+        // Aquí puedes manejar la subida del archivo, por ejemplo, enviarlo a un servidor
+        const formData = new FormData()
+        formData.append('file', file)
+
+        try {
+          const response = await this.$axios.post('/files/upload-pdf', formData)
+
+          if (response.status === 200) {
+            this.newMemo.attachment = response.data
+            Swal.fire('Éxito', 'Archivo subido correctamente.', 'success')
+          } else {
+            console.warn('Error al subir el archivo:', response.data)
+            Swal.fire('Error', 'No se pudo subir el archivo. Por favor, inténtelo de nuevo más tarde.', 'error')
+          }
+        } catch (error) {
+          console.error('Error al subir el archivo:', error)
+          Swal.fire('Error', 'No se pudo subir el archivo. Por favor, inténtelo de nuevo más tarde.', 'error')
+        }
+      } else {
+        console.warn('No se seleccionó ningún archivo')
+      }
+    }
   }
 }
 </script>
